@@ -20,3 +20,5 @@ Percebe-se no próprio CEDUP, que o sistema que utilizam para gerenciar as impre
 * Permitir o cadastro de estudantes e professores
 * Facilitar o envio de arquivos para impressão
 * Aplicar o sistema dentro da própria escola, contribuindo para um meio mais sustentável
+
+#### Para mais informações consulte a [wiki do projeto](https://github.com/marcoswb/PrintUp/wiki)
