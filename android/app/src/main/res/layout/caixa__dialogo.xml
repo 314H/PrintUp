@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutCaixaDialogo"
+    android:theme="@style/AppTheme"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="30dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/lyt_NumeroCopiasCaixaDialogo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+        app:boxStrokeColor="@color/colorPrimary"
+        android:textColorHint="@color/colorAccent"
+        android:hint="@string/tx_numCopias">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="numberSigned"
+            android:digits="0123456789"
+            android:maxLength="2"
+            android:singleLine="true"
+            android:textCursorDrawable="@color/colorPrimary" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

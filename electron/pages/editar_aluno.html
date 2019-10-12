@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+        if (typeof module === 'object') {
+            window.module = module;
+            module = undefined;
+        }
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script>
+    <link rel="stylesheet" href="../css/photon.css">
+    <link rel="stylesheet" href="../css/syle.css">
+    <title>PrintUp</title>
+    <meta charset="utf-8">
+</head>
+
+<body onload="carregarFirebase(), 
+              carregarDados()">
+
+    <!-- painel do formulário -->
+    <div class="pane-body">
+        <form id="formPesquisaAluno">
+            <div class="form-group">
+                <input type="text" id="inputEditarNomeAluno" class="form-control inputCadastro"
+                    placeholder="Editar Nome"></input>
+            </div>
+            <div class="form-group">
+                <input type="text" id="inputEditarEmailAluno" class="form-control inputCadastro"
+                    placeholder="Editar Email"></input>
+            </div>
+            <div class="form-group">
+                <input type="text" id="inputEditarCPFAluno" class="form-control inputCadastro"
+                    placeholder="Editar CPF"></input>
+            </div>
+            <button type="button" id="buttonEditarAluno" onclick="editar()"
+                class="btn btn-positive buttonCadastro" disabled>Editar</button>
+        </form>
+    </div>
+</body>
+<!-- scripts firebase -->
+<script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-auth.js"></script>
+
+<!-- script para executar ações na página -->
+<script src="../controllers/editar_aluno.js"></script>
+
+</html>

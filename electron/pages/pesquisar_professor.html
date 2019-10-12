@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script>
+    if (typeof module === 'object') {
+      window.module = module;
+      module = undefined;
+    }
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script>
+  <link rel="stylesheet" href="../css/photon.css">
+  <link rel="stylesheet" href="../css/syle.css">
+  <title>PrintUp</title>
+  <meta charset="utf-8">
+</head>
+
+<body onload="carregarFirebase()">
+
+  <div class="window">
+    <header class="toolbar toolbar-header">
+      <h1 class="title">PESQUISA DE PROFESSOR</h1>
+    </header>
+    <div class="window-content">
+
+      <!-- divisão da janela em painéis -->
+      <div class="pane-group">
+
+        <!-- menu lateral -->
+        <div class="pane-sm sidebar">
+
+          <!-- item home do menu -->
+          <nav class="nav-group">
+            <a href="../index.html" class="nav-group-item active menuCadastro">
+              <span class="icon icon-home"></span>
+              Home
+            </a>
+          </nav><br>
+
+          <!-- primeiro item do menu -->
+          <nav class="nav-group">
+            <h5 class="nav-group-title menuCadastro">Cadastros</h5>
+
+            <!-- subMenus do primeiro item -->
+            <a href="./cadastro_aluno.html" class="nav-group-item active subMenuCadastro">
+              <span>Aluno</span>
+            </a>
+            <a href="./cadastro_professor.html" class="nav-group-item subMenuCadastro">
+              <span>Professor</span>
+            </a>
+          </nav>
+
+          <!-- segundo item do menu -->
+          <nav class="nav-group">
+            <h5 class="nav-group-title menuCadastro">Pesquisar</h5>
+
+            <!-- subMenus do segundo item -->
+            <a href="./pesquisar_aluno.html" class="nav-group-item active subMenuCadastro">
+              <span>Aluno</span>
+            </a>
+            <a href="./pesquisar_professor.html" class="nav-group-item subMenuCadastro">
+              <span>Professor</span>
+            </a>
+          </nav>
+
+        </div>
+
+        <!-- formulário de cadastro -->
+        <div class="pane">
+          <div class="pane-body">
+            <form id="formPesquisaProfessor" action="" class="pane-body">
+              <div class="form-group">
+                <input type="text" id="inputPesquisaCPFProfessor" class="form-control inputCadastro"
+                  placeholder="Pesquisar professor por CPF" onkeypress="pesquisar()">
+                </input>
+              </div>
+              <div class="form-group">
+                <input type="text" id="inputPesquisaNomeProfessor" class="form-control inputCadastro"
+                  placeholder="Pesquisar professor por nome" onkeypress="pesquisar()">
+                </input>
+              </div>
+              <button type="button" id="pesquisarProfessor" onclick="pesquisar()"
+                class="btn btn-positive buttonCadastro">
+                Procurar
+              </button>
+            </form>
+          </div>
+
+          <!-- painel da lista de resultados -->
+          <div class="pane-body">
+            <table id="resultadoPesquisaProfessor" class="table table-striped itensTabela">
+
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>CPF</th>
+                  <th>Editar</th>
+                  <th>Apagar</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+<!-- scripts firebase -->
+<script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-database.js"></script>
+
+<!-- script para executar ações na página -->
+<script src="../controllers/pesquisar_professor.js"></script>
+
+</html>

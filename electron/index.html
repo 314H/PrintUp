@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- script para recarregar página a cada 1 minuto -->
+  <META HTTP-EQUIV="Refresh" CONTENT="60;URL=./index.html">
+  <script>
+    if (typeof module === 'object') {
+      window.module = module;
+      module = undefined;
+    }
+  </script>
+
+  <script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
+  <link rel="stylesheet" href="./css/photon.css">
+  <link rel="stylesheet" href="./css/syle.css">
+  <title>PrintUp</title>
+  <meta charset="utf-8">
+</head>
+
+<body onload="carregarFirebase(),
+              preencherlistaAlunos(), 
+              preencherlistaProfessores()">
+
+  <div class="window">
+    <header class="toolbar toolbar-header">
+      <h1 class="title">IMPRESSÃO</h1>
+    </header>
+    <div class="window-content  containerPrincipal">
+
+      <!-- divisão da janela em painéis -->
+      <div class="pane-group">
+
+        <!-- menu lateral -->
+        <div class="pane-sm sidebar">
+
+          <!-- item home do menu -->
+          <nav class="nav-group">
+            <a href="./index.html" class="nav-group-item active menuCadastro">
+              <span class="icon icon-home"></span>
+              Home
+            </a>
+          </nav><br>
+
+          <!-- primeiro item do menu -->
+          <nav class="nav-group">
+            <h5 class="nav-group-title menuCadastro">Cadastros</h5>
+
+            <!-- subMenus do primeiro item -->
+            <a href="./pages/cadastro_aluno.html" class="nav-group-item active subMenuCadastro">
+              <span>Aluno</span>
+            </a>
+            <a href="./pages/cadastro_professor.html" class="nav-group-item subMenuCadastro">
+              <span>Professor</span>
+            </a>
+          </nav>
+
+          <!-- segundo item do menu -->
+          <nav class="nav-group">
+            <h5 class="nav-group-title menuCadastro">Pesquisar</h5>
+
+            <!-- subMenus do segundo item -->
+            <a href="./pages/pesquisar_aluno.html" class="nav-group-item active subMenuCadastro">
+              <span>Aluno</span>
+            </a>
+            <a href="./pages/pesquisar_professor.html" class="nav-group-item subMenuCadastro">
+              <span>Professor</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- painel com as listas -->
+        <div class="pane containerTabela">
+
+          <!-- lista alunos -->
+          <table id="tabelaDeAlunos" class="table table-striped itensTabela">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Cópias</th>
+                <th>Arquivo</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+
+          <!-- lista professores -->
+          <table id="tabelaDeProfessores" class="table table-striped itensTabela">
+            <thead>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Cópias</th>
+                  <th>Arquivo</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+            <tbody>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+<!-- scripts firebase -->
+<script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-storage.js"></script>
+
+<!-- script para executar ações na página -->
+<script src="./controllers/index.js"></script>
+
+</html>
