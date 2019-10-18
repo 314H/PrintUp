@@ -1,4 +1,4 @@
-// configuração do firebase
+// configuração e inicialização do firebase
 async function carregarFirebase() {
     const firebaseConfig = {
         apiKey: "AIzaSyBAPrm6tJa59ZRLFGYQz8WHl0OGjYvlmGk",
@@ -14,27 +14,33 @@ async function carregarFirebase() {
 
 
 //máscara para o CPF
-$("#inputEditarCPFProfessor").mask("000.000.000-00");
+$("#input_editarCPFProfessor").mask("000.000.000-00");
 
 
 // carregar dados para preencher os inputs
 async function carregarDados() {
-    const inputNome = document.getElementById('inputEditarNomeProfessor')
-    const inputEmail = document.getElementById('inputEditarEmailProfessor')
-    const inputCPF = document.getElementById('inputEditarCPFProfessor')
+    const inputNome = document.getElementById('input_editarNomeProfessor')
+    const inputEmail = document.getElementById('input_editarEmailProfessor')
+    const inputCPF = document.getElementById('input_editarCPFProfessor')
 
-    // pegar id que vem da paǵina anterior
+    // variável para pegar id que vem da pagina anterior
     var link = window.location.href
     var resultado = link.substring(link.indexOf("?") + 4)
 
-    const banco_dados = firebase.database()
+    const referenciaProfessor = firebase.database()
 
-    await banco_dados.ref(`usuarios/professor/${resultado}`).once('value').then(function (snapshot) {
+    // pesquisar no firebase database pelo id que veio da tela anterior
+    await referenciaProfessor.ref(`usuarios/professor/${resultado}`).once('value').then(function (snapshot) {
         const professor = snapshot.val()
+
+        // setar nome e email do professor pesquisado para o input
         inputNome.value = professor.nome
         inputEmail.value = professor.email
 
+        // setar CPF formatado do aluno pesquisado para o input
         const cpfSeparado = professor.cpf.split("")
+
+        // formatar o CPF
         const cpfFormatado = cpfSeparado[0]+cpfSeparado[1]+cpfSeparado[2]+'.'+cpfSeparado[3]+cpfSeparado[4]+cpfSeparado[5]+'.'+cpfSeparado[6]+cpfSeparado[7]+cpfSeparado[8]+'-'+cpfSeparado[9]+cpfSeparado[10]
 
         inputCPF.value = cpfFormatado
@@ -45,20 +51,22 @@ async function carregarDados() {
         cpfGlobal = professor.cpf
         
     })
-    $('#buttonEditarProfessor').removeAttr('disabled')
+    $('#button_editarProfessor').removeAttr('disabled')
 }
 
 
 // editar usuario firebase
 function editar() {
-    const inputNome = document.getElementById('inputEditarNomeProfessor').value
-    const inputEmail = document.getElementById('inputEditarEmailProfessor').value
-    const inputCPF = document.getElementById('inputEditarCPFProfessor').value
+    const inputNome = document.getElementById('input_editarNomeProfessor').value
+    const inputEmail = document.getElementById('input_editarEmailProfessor').value
+    const inputCPF = document.getElementById('input_editarCPFProfessor').value
     const cpfFormatado = retirarCaracteresEspeciais(inputCPF)
+
+    // transformar nome em minusculo para pesquisas posteriores
     const nomeMinusculo = inputNome.toLowerCase()
 
     // referencia banco de dados
-    var banco_dados = firebase.database().ref(`usuarios/professor/`)
+    var referenciaProfessor = firebase.database().ref(`usuarios/professor/`)
 
     let professor = {
         "nome": inputNome,
@@ -67,44 +75,69 @@ function editar() {
         "nomeLowerCase": nomeMinusculo
     }
     
-    banco_dados.child(cpfGlobal).remove()
-        .then(function() {
-            banco_dados.child(professor.cpf).set(professor)
-                .then(function() {
-                    const autenticacao = firebase.auth()
+    if((inputNome.trim() == '') || (inputEmail.trim() == '') || (inputCPF.trim() == '')) {
+        alert('Preencha todos os campos corretamente!')
+    } else {
+        if((inputEmail.indexOf("@") != -1)  && (inputEmail.indexOf(".") != -1)) {
+            
+            // verificar se CPF é válido
+            if(cpfFormatado.length != 11) {
+                alert('CPF inválido!')
+            } else {
 
-                    autenticacao.signInWithEmailAndPassword(emailGlobal, cpfGlobal)
-                    .then(function(userCredential) {
-                        const user = userCredential.user
+            // remover antigo usuario
+            referenciaProfessor.child(cpfGlobal).remove()
+            .then(function() {
 
-                        user.updateEmail(inputEmail)
-                            .then(function() {
-                                    
-                                user.updatePassword(cpfFormatado)
+                // adicionar usuario atualizado
+                referenciaProfessor.child(professor.cpf).set(professor)
+                    .then(function() {
+
+                        // referencia para firebase auth
+                        const autenticacao = firebase.auth()
+
+                        // autenticar no firebase auth com antigo cpf e email
+                        autenticacao.signInWithEmailAndPassword(emailGlobal, cpfGlobal)
+                        .then(function(userCredential) {
+
+                            // pegar credencial de autenticação
+                            const user = userCredential.user
+
+                            // atualizar email de autenticação do usuario
+                            user.updateEmail(inputEmail)
                                 .then(function() {
-                                    alert('Atualizado com sucesso')
-                                    window.close()
+                                        
+                                    // atualizar senha de autenticação do usuario
+                                    user.updatePassword(cpfFormatado)
+                                    .then(function() {
+                                        alert('Atualizado com sucesso')
+                                        window.close()
+                                    })
+                                    .catch(function(error) {
+                                        alert(`Erro ao atualizar usuário: ${error}`)
+                                    })
+
                                 })
                                 .catch(function(error) {
                                     alert(`Erro ao atualizar usuário: ${error}`)
                                 })
-
-                            })
-                            .catch(function(error) {
-                                alert(`Erro ao atualizar usuário: ${error}`)
-                            })
+                        })
+                        .catch(function(error) {
+                            alert(`Erro ao atualizar usuário: ${error}`)
+                        })
                     })
                     .catch(function(error) {
                         alert(`Erro ao atualizar usuário: ${error}`)
                     })
-                })
-                .catch(function(error) {
-                    alert(`Erro ao atualizar usuário: ${error}`)
-                })
-        })
-        .catch(function(error) {
-            alert(`Erro ao atualizar usuário: ${error}`)
-        })
+            })
+            .catch(function(error) {
+                alert(`Erro ao atualizar usuário: ${error}`)
+            })
+        }
+        } else {
+            alert('Formato de email inválido!')
+        }
+    }
 }
 
 

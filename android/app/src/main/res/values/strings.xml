@@ -75,6 +75,12 @@
     <string name="tx_token">Erro ao gerar token de acesso!</string>
     <string name="tx_apagarArquivoStorage">Erro ao apagar arquivo!</string>
     <string name="tx_apagadoSucesso">Arquivo apagado com sucesso!</string>
+    <string name="tx_cadastro">Cadastro de Usuário</string>
+    <string name="tx_emailCadastrado">Esse email já foi cadastrado</string>
+    <string name="tx_arquivoImpresso">Seu arquivo já foi impresso, pode pegá-lo no xerox</string>
+    <string name="tx_tituloNotification">Printup</string>
+    <string name="tx_corpoNotification">Seu arquivo já foi impresso, pode pegá-lo no xerox!</string>
+    <string name="tx_nomeArquivo">Nome não pode conter(. / # / $ / [ / ])</string>
     <string-array name="titulos_menu">
         <item>Menu</item>
         <item>Imprimir</item>

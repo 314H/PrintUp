@@ -38,13 +38,13 @@ import static android.app.Activity.RESULT_OK;
 
 public class Fragment_ImprimirUsuario extends Fragment {
 
-    TextInputLayout lt_numeroCopias;
-    Button bt_selecionarPDF, bt_selecionarDOCX;
-    TextView tx_nomeUsuario;
-    StorageReference storageReference;
-    DatabaseReference databaseReference;
+    LinearLayout layout_imprimirUsuario;
+    TextInputLayout inputLayout_numeroCopias;
+    Button button_selecionarPDF, button_selecionarDOCX;
+    TextView textView_nomeUsuario;
+    StorageReference reference_arquivo;
+    DatabaseReference reference_impressao;
     String tipoDocumento, extensao;
-    LinearLayout linearLayout;
 
     @Nullable
     @Override
@@ -54,15 +54,15 @@ public class Fragment_ImprimirUsuario extends Fragment {
 
         inicializarFirebase();
 
-        bt_selecionarPDF = view.findViewById(R.id.btn_SelecionarPDFUsuarioImprimir);
-        bt_selecionarDOCX = view.findViewById(R.id.btn_SelecionarDOCXUsuarioImprimir);
-        tx_nomeUsuario = view.findViewById(R.id.txt_NomeUsuarioImprimir);
-        lt_numeroCopias = view.findViewById(R.id.lyt_NumeroCopiasUsuarioImprimir);
-        linearLayout = view.findViewById(R.id.layoutUsuarioImprimir);
+        button_selecionarDOCX = view.findViewById(R.id.button_selecionarDOCXUsuarioImprimir);
+        button_selecionarPDF = view.findViewById(R.id.button_selecionarPDFUsuarioImprimir);
+        textView_nomeUsuario = view.findViewById(R.id.textView_nomeUsuarioImprimir);
+        inputLayout_numeroCopias = view.findViewById(R.id.inputLayout_numeroCopiasUsuarioImprimir);
+        layout_imprimirUsuario = view.findViewById(R.id.layout_usuarioImprimir);
 
-        tx_nomeUsuario.setText(pegarNomeSharedPreference());
+        textView_nomeUsuario.setText(nomeSharedPreference());
 
-        bt_selecionarPDF.setOnClickListener(new View.OnClickListener() {
+        button_selecionarPDF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tipoDocumento = "application/pdf";
@@ -71,7 +71,7 @@ public class Fragment_ImprimirUsuario extends Fragment {
             }
         });
 
-        bt_selecionarDOCX.setOnClickListener(new View.OnClickListener() {
+        button_selecionarDOCX.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tipoDocumento = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -83,29 +83,33 @@ public class Fragment_ImprimirUsuario extends Fragment {
         return view;
     }
 
+    // inicializar variaveis do firebase
     private void inicializarFirebase() {
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        storageReference = FirebaseStorage.getInstance().getReference();
+        reference_impressao = FirebaseDatabase.getInstance().getReference();
+        reference_arquivo = FirebaseStorage.getInstance().getReference();
     }
 
-    private String pegarNomeSharedPreference() {
-        SharedPreferences preferences = getActivity().getSharedPreferences("DadosUsuario", Context.MODE_PRIVATE);
+    // pegar nome salvo na memoria da aplicação
+    private String nomeSharedPreference() {
+        SharedPreferences preferences = getActivity().getSharedPreferences("dadosUsuario", Context.MODE_PRIVATE);
         String nome = preferences.getString("nome", "não encontrado");
         return nome;
     }
 
+    // verificar se campo foi preenchido corretamente
     private void verificarCampo() {
-        String numeroCopias = lt_numeroCopias.getEditText().getText().toString().trim();
+        String numeroCopias = inputLayout_numeroCopias.getEditText().getText().toString().trim();
 
         if (!TextUtils.isEmpty(numeroCopias) && !numeroCopias.equals("0") && !numeroCopias.equals("00")){
-            lt_numeroCopias.setError(null);
+            inputLayout_numeroCopias.setError(null);
             abrirSelecaoArquivo();
         }else{
-            lt_numeroCopias.setError(getString(R.string.tx_erroCampo));
-            lt_numeroCopias.requestFocus();
+            inputLayout_numeroCopias.setError(getString(R.string.tx_erroCampo));
+            inputLayout_numeroCopias.requestFocus();
         }
     }
 
+    // abrir midia do celular para selecionar arquivo passando o tipo de documento que pode ser selecionado
     private void abrirSelecaoArquivo() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType(tipoDocumento);
@@ -113,6 +117,7 @@ public class Fragment_ImprimirUsuario extends Fragment {
         startActivityForResult(Intent.createChooser(intent, getString(R.string.tx_selecionarArquivo)), 1);
     }
 
+    // pegar arquivo que foi selecionado
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -121,13 +126,13 @@ public class Fragment_ImprimirUsuario extends Fragment {
         }
     }
 
+    // enviar arquivo para o storage do firebase
     private void enviarArquivo(Uri data) {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setTitle(getString(R.string.tx_enviando));
         progressDialog.show();
 
-        storageReference.child("imprimir").child(pegarTipoUsuarioSharedPreference())
-                .child(System.currentTimeMillis()+extensao).putFile(data)
+        reference_arquivo.child("imprimir").child(tipoUsuarioSharedPreference()).child(System.currentTimeMillis()+extensao).putFile(data)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -150,32 +155,35 @@ public class Fragment_ImprimirUsuario extends Fragment {
         });
     }
 
-    private void salvarImpressaoFirebaseDatabase(UploadTask.TaskSnapshot taskSnapshot) {
-        Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
-        while (!uri.isComplete());
-        Uri url = uri.getResult();
-        Upload_Arquivo upload = new Upload_Arquivo();
-        upload.numero_copias = lt_numeroCopias.getEditText().getText().toString();
-        upload.url = url.toString();
-        upload.nome_usuario = pegarNomeSharedPreference();
-        upload.status = "aguardando";
-        databaseReference.child("imprimir").child(pegarTipoUsuarioSharedPreference()).child(databaseReference.push().getKey()).setValue(upload);
-
-        Toast.makeText(getContext(), getString(R.string.tx_UploadComSucesso), Toast.LENGTH_LONG).show();
-    }
-
-    private String pegarTipoUsuarioSharedPreference() {
+    // pegar tipo de usuario que está logado
+    private String tipoUsuarioSharedPreference() {
         SharedPreferences preferences = getActivity().getSharedPreferences("DadosUsuario", Context.MODE_PRIVATE);
         String tipo = preferences.getString("tipo", "não encontrado");
         return tipo;
     }
 
+    // salvar impressão no realtime do firebase
+    private void salvarImpressaoFirebaseDatabase(UploadTask.TaskSnapshot taskSnapshot) {
+        Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
+        while (!uri.isComplete());
+        Uri url = uri.getResult();
+        Upload_Arquivo upload = new Upload_Arquivo();
+        upload.numeroCopias = inputLayout_numeroCopias.getEditText().getText().toString();
+        upload.url = url.toString();
+        upload.nomeUsuario = nomeSharedPreference();
+        upload.status = "aguardando";
+        reference_impressao.child("imprimir").child(tipoUsuarioSharedPreference()).child(reference_impressao.push().getKey()).setValue(upload);
+
+        Toast.makeText(getContext(), getString(R.string.tx_UploadComSucesso), Toast.LENGTH_LONG).show();
+    }
+
+    // abrir o menu do usuario
     public void abrirMenu(){
-        if (pegarTipoUsuarioSharedPreference().equals("aluno")){
+        if (tipoUsuarioSharedPreference().equals("aluno")){
             Intent intent = new Intent(getContext(), Menu_Aluno.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-        }else if (pegarTipoUsuarioSharedPreference().equals("professor")){
+        }else if (tipoUsuarioSharedPreference().equals("professor")){
             Intent intent = new Intent(getContext(), Menu_Professor.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);

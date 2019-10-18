@@ -31,54 +31,56 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Fragment_MenuAluno extends Fragment {
 
-    DatabaseReference reference;
-    TextView tx_nomeAluno;
-    Button bt_imprimir, bt_listaImpressao;
+    TextView textView_nomeAluno;
+    Button button_procurarApostila, button_listaImpressao;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_menu_aluno, container, false);
 
-        reference = FirebaseDatabase.getInstance().getReference();
+        // vincular componentes do fragment
+        textView_nomeAluno = view.findViewById(R.id.textView_nomeMenuAluno);
+        button_procurarApostila = view.findViewById(R.id.button_procurarApostila);
+        button_listaImpressao = view.findViewById(R.id.buttonn_listaImpressoesAluno);
 
-        tx_nomeAluno = view.findViewById(R.id.txt_NomeMenuAluno);
-        bt_imprimir = view.findViewById(R.id.btn_ProcurarApostila);
-        bt_listaImpressao = view.findViewById(R.id.btn_AbrirListaImpressaoAluno);
+        // setar nome do aluno no textView
+        textView_nomeAluno.setText(getString(R.string.tx_bemVindo)+" "+nomeSharedPreference());
 
-        tx_nomeAluno.setText(getString(R.string.tx_bemVindo)+" "+pegarSharedPreference());
-
-        bt_imprimir.setOnClickListener(new View.OnClickListener() {
+        button_procurarApostila.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                abrirArquivos();
+                abrirListaProfessores();
             }
         });
 
-        bt_listaImpressao.setOnClickListener(new View.OnClickListener() {
+        button_listaImpressao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                abrirListaArquivos();
+                abrirListaArquivosImpressao();
             }
         });
 
         return view;
     }
 
-    private void abrirListaArquivos() {
-        Intent intent = new Intent(getContext(), Lista_Impressao.class);
-        intent.putExtra("tipo", "aluno");
-        startActivity(intent);
-    }
-
-    private String pegarSharedPreference() {
-        SharedPreferences preferences = getActivity().getSharedPreferences("DadosUsuario", Context.MODE_PRIVATE);
+    // pegar nome salvo no Shared Preference
+    private String nomeSharedPreference() {
+        SharedPreferences preferences = getActivity().getSharedPreferences("dadosUsuario", Context.MODE_PRIVATE);
         String nome = preferences.getString("nome", "não encontrado");
         return nome;
     }
 
-    private void abrirArquivos() {
+    // abrir listView com professores do sistema
+    private void abrirListaProfessores() {
         Intent intent = new Intent(getContext(), Ver_Arquivos.class);
+        startActivity(intent);
+    }
+
+    // abrir listView com arquivos enviados para impressão passando o tipo de usuario
+    private void abrirListaArquivosImpressao() {
+        Intent intent = new Intent(getContext(), Lista_Impressao.class);
+        intent.putExtra("tipo", "aluno");
         startActivity(intent);
     }
 }

@@ -32,8 +32,8 @@ import java.util.ArrayList;
 
 public class Ver_Arquivos extends AppCompatActivity {
 
-    ListView lv_professores;
-    DatabaseReference databaseReference, referenceMudanca;
+    ListView listView_professores;
+    DatabaseReference reference_professores, reference_notification;
     ArrayList<String> arrayProfessores = new ArrayList<String>();
     ArrayAdapter<String> arrayAdapter;
 
@@ -48,86 +48,35 @@ public class Ver_Arquivos extends AppCompatActivity {
         preencherArrayList();
         verificarMudancasFirebase();
 
-        lv_professores.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView_professores.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String arquivo = arrayProfessores.get(position);
-                arquivoProf(arquivo);
+                String professor = arrayProfessores.get(position);
+                arquivoProf(professor);
             }
         });
     }
 
-    private void verificarMudancasFirebase() {
-        referenceMudanca.child("imprimir").child("aluno").orderByChild("nome_usuario").equalTo(pegarSharedPreference())
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @androidx.annotation.Nullable String s) {
-
-                    }
-
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @androidx.annotation.Nullable String s) {
-
-
-                        NotificationManager notificationManager =
-                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-                        String channelId = "some_channel_id";
-                        CharSequence channelName = "Some Channel";
-                        int importance = NotificationManager.IMPORTANCE_LOW;
-                        NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
-                        notificationChannel.enableLights(true);
-                        notificationChannel.setLightColor(Color.RED);
-                        notificationChannel.enableVibration(true);
-                        notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-                        notificationManager.createNotificationChannel(notificationChannel);
-
-
-                        NotificationCompat.Builder mBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(Ver_Arquivos.this, notificationChannel.getId())
-                                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                                .setContentTitle("Printup")
-                                .setDefaults(Notification.DEFAULT_SOUND)
-                                .setContentText("Seu arquivo já foi impresso, pode pegá-lo no xerox")
-                                .setAutoCancel(true);
-
-                        NotificationManager mNotifymgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                        mNotifymgr.notify(1, mBuilder.build());
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @androidx.annotation.Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-    }
-
+    // vincular componentes da activity
     private void vincularComponente() {
-        lv_professores = findViewById(R.id.ltv_NomeProfessoresVerArquivos);
+        listView_professores = findViewById(R.id.listView_professoresVerArquivos);
     }
 
+    // inicializar variáveis do firebase
     private void inicializarFirebase() {
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        referenceMudanca = FirebaseDatabase.getInstance().getReference();
+        reference_professores = FirebaseDatabase.getInstance().getReference();
+        reference_notification = FirebaseDatabase.getInstance().getReference();
     }
 
+    // criar adapter para preencher o listView
     private void criarArrayAdapter() {
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayProfessores);
-        lv_professores.setAdapter(arrayAdapter);
+        listView_professores.setAdapter(arrayAdapter);
     }
 
+    // preencher lista de professores com nomes do firebase
     private void preencherArrayList() {
-        databaseReference.child("sistema").addChildEventListener(new ChildEventListener() {
+        reference_professores.child("sistema").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 String value = dataSnapshot.getKey();
@@ -154,15 +103,73 @@ public class Ver_Arquivos extends AppCompatActivity {
         });
     }
 
-    public void arquivoProf(String arquivo){
-        Intent intent = new Intent(getApplicationContext(), Arquivo_Professor.class);
-        intent.putExtra("nomeProfessor", arquivo);
-        startActivity(intent);
+    // monitorar mudanças no status de alguma impressão e notificar o usuario caso mude
+    private void verificarMudancasFirebase() {
+        reference_notification.child("imprimir").child("aluno").orderByChild("nomeUsuario").equalTo(nomeSharedPreference())
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @androidx.annotation.Nullable String s) {
+
+                    }
+
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @androidx.annotation.Nullable String s) {
+
+
+                        NotificationManager notificationManager =
+                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                        String channelId = "some_channel_id";
+                        CharSequence channelName = "Some Channel";
+                        int importance = NotificationManager.IMPORTANCE_LOW;
+                        NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
+                        notificationChannel.enableLights(true);
+                        notificationChannel.setLightColor(Color.RED);
+                        notificationChannel.enableVibration(true);
+                        notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                        notificationManager.createNotificationChannel(notificationChannel);
+
+                        // criação da notificação
+                        NotificationCompat.Builder mBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(Ver_Arquivos.this, notificationChannel.getId())
+                                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                                .setContentTitle(getString(R.string.tx_tituloNotification))
+                                .setDefaults(Notification.DEFAULT_SOUND)
+                                .setContentText(getString(R.string.tx_corpoNotification))
+                                .setAutoCancel(true);
+
+                        NotificationManager mNotifymgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        mNotifymgr.notify(1, mBuilder.build());
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @androidx.annotation.Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
     }
 
-    private String pegarSharedPreference() {
-        SharedPreferences preferences = getSharedPreferences("DadosUsuario", Context.MODE_PRIVATE);
+    // pegar nome do aluno para ser usado na verificação de mudanças de arquivos de impressão do firebase
+    private String nomeSharedPreference() {
+        SharedPreferences preferences = getSharedPreferences("dadosUsuario", Context.MODE_PRIVATE);
         String nome = preferences.getString("nome", "não encontrado");
         return nome;
+    }
+
+    // intent para abrir activity com arquivos do professor selecionado
+    public void arquivoProf(String professor){
+        Intent intent = new Intent(getApplicationContext(), Arquivo_Professor.class);
+        intent.putExtra("nomeProfessor", professor);
+        startActivity(intent);
     }
 }

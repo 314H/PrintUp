@@ -1,14 +1,12 @@
-const path = require('path')
+// importações para a página
 const shell = require('electron').shell
-const print = require('print-js')
-const { BrowserWindow } = require('electron').remote
 const fs = require('fs')
 const http = require('https')
 var admin = require("firebase-admin")
 var serviceAccount = require("./token/token.json")
 
 
-// configuração do firebase e inicialização do firebase
+// configuração e inicialização do firebase
 async function carregarFirebase() {
   const firebaseConfig = {
     apiKey: "AIzaSyBAPrm6tJa59ZRLFGYQz8WHl0OGjYvlmGk",
@@ -32,24 +30,32 @@ async function carregarFirebase() {
     referenceAluno.ref('imprimir/aluno').once('value').then(function (snapshot) {
 
       const arrayAlunos = snapshot.val();
+
+      // percorrer cada impressão do firebase e criar uma linha
       for (const aluno in arrayAlunos) {
 
-        var novaLinha = $(`<tr id=${aluno}>`);
-        var colunas = "";
-        colunas += '<td>' + arrayAlunos[aluno].nome_usuario + '</td>';
+        var novaLinha = $("<tr>");
+        var colunas = ""
 
-        colunas += '<td>' + arrayAlunos[aluno].numero_copias + '</td>';
+        colunas += `<td>${arrayAlunos[aluno].nomeUsuario}</td>`
 
-        colunas += '<td><input type="button" id="' + aluno +
-          '" class="btn btn-mini btn-default buttonLista" value="imprimir"  onclick="imprimir(\'' + arrayAlunos[aluno].url + '\')"/>'+
-          '<input type="button" id="' + aluno +
-          '" class="btn btn-mini btn-positive" value="notificação" onClick="arquivoImpressoAluno(id)"/>' +
-          ' <input type="button" id="' + aluno +
-          '" class="btn btn-mini btn-negative" value="apagar" onClick="arquivoEntregueAluno(id)"/></td>';
+        colunas += `<td>${arrayAlunos[aluno].numeroCopias}</td>`
 
-        colunas += '<td>'+arrayAlunos[aluno].status+'</td>'
+        colunas += "<td>"
+
+        colunas += `<input type="button" id="${aluno}" class="btn btn-mini btn-default buttonLista" value="imprimir"  onclick="imprimir(${arrayAlunos[aluno].url}"/>`
+          
+        colunas += `<input type="button" id="${aluno}" class="btn btn-mini btn-positive" value="notificação" onClick="arquivoImpressoAluno(id)"/>`
+          
+        colunas += `<input type="button" id="${aluno}" class="btn btn-mini btn-negative" value="apagar" onClick="arquivoEntregueAluno(id)"/>`
+        
+        colunas += "</td>"
+
+        colunas += `<td>${arrayAlunos[aluno].status}</td>`
+
         novaLinha.append(colunas);
-        $('#tabelaDeAlunos').append(novaLinha);
+
+        $('#tabela_impressoesAlunos').append(novaLinha);
       }
     })
     return false;
@@ -61,31 +67,36 @@ async function carregarFirebase() {
 (function ($) {
   preencherlistaProfessores = function () {
 
-    const referenceAluno = firebase.database();
-    referenceAluno.ref('imprimir/professor').once('value').then(function (snapshot) {
+    const referenceProfessor = firebase.database();
+    referenceProfessor.ref('imprimir/professor').once('value').then(function (snapshot) {
 
       const arrayProfessores = snapshot.val();
+
+      // preencher cada impressão do firebase e criar uma linha
       for (const professor in arrayProfessores) {
 
-        var novaLinha = $(`<tr id=${professor}>`);
+        var novaLinha = $("<tr>");
         var colunas = "";
 
-        colunas += '<td>' + arrayProfessores[professor].nome_usuario + '</td>';
+        colunas += `<td>${arrayProfessores[professor].nomeUsuario}</td>`
 
-        colunas += '<td>' + arrayProfessores[professor].numero_copias + '</td>';
+        colunas += `<td>${arrayProfessores[professor].numeroCopias}</td>`
 
-        colunas += '<td><input type="button" id="' + professor +
-          '" class="btn btn-mini btn-default buttonLista" value="imprimir" onclick="imprimir(\'' + arrayProfessores[professor].url + '\')"/>'+
-          '<input type="button" id="' + professor +
-          '" class="btn btn-mini btn-positive" value="notificação" onClick="arquivoImpressoProfessor(id)"/>' +
-          ' <input type="button" id="' + professor +
-          '" class="btn btn-mini btn-negative" value="apagar" onClick="arquivoEntregueProfessor(id)"/></td>';
+        colunas += "<td>"
+        
+        colunas += `<input type="button" id="${professor}" class="btn btn-mini btn-default buttonLista" value="imprimir" onclick="imprimir(${arrayProfessores[professor].url}"/>`
+          
+        colunas += `<input type="button" id="${professor}" class="btn btn-mini btn-positive" value="notificação" onClick="arquivoImpressoProfessor(id)"/>`
+          
+        colunas += `<input type="button" id="${professor}" class="btn btn-mini btn-negative" value="apagar" onClick="arquivoEntregueProfessor(id)"/>`
+        
+        colunas += "</td>"
 
-        colunas += '<td>'+arrayProfessores[professor].status+'</td>'
+        colunas += `<td>${arrayProfessores[professor].status}</td>`
 
         novaLinha.append(colunas);
-        $('#tabelaDeProfessores').append(novaLinha);
 
+        $('#tabela_impressoesProfessores').append(novaLinha);
       }
     })
     return false;
@@ -103,17 +114,22 @@ function arquivoImpressoAluno(id) {
     databaseURL: "https://tcc-marcos-willian.firebaseio.com"
   })
 
-  // pegar token de identificação para o dispostivo do usuario
-  referenceAluno.ref(`imprimir/aluno/${id}/nome_usuario`).once('value').then(function (snapshot) {
+  // pegar nome do usuario que tem o pedido de impressão igual 'id'
+  referenceAluno.ref(`imprimir/aluno/${id}/nomeUsuario`).once('value').then(function (snapshot) {
     const nome = snapshot.val()
 
+    // pesquisar usuário do firebase com nome igual do pedido de impressão e pegar seu CPF
     referenceAluno.ref(`usuarios/aluno`).orderByChild("nome").equalTo(nome).on('child_added', function(snapshot) {
+      const cpfAluno = snapshot.key
 
-      referenceAluno.ref(`usuarios/aluno/${snapshot.key}`).once("value").then(function(snapshot) {
+      // pegar dados do aluno aluno pesquisado
+      referenceAluno.ref(`usuarios/aluno/${cpfAluno}`).once("value").then(function(snapshot) {
         const dados = snapshot.val()
 
+        // token usado para enviar notificação para o dispositivo para o usuário
         var registrationToken = dados.tokenNotification
 
+        // dados da notificação
         var payload = {
           notification: {
             title: "PrintUp",
@@ -121,6 +137,7 @@ function arquivoImpressoAluno(id) {
           }
         }
         
+        // configurações extras da notificação
         var options = {
           priority: "high",
           timeToLive: 60 * 60 *24
@@ -153,17 +170,21 @@ function arquivoImpressoProfessor(id) {
     databaseURL: "https://tcc-marcos-willian.firebaseio.com"
   })
 
-  // pegar token de identificação para o dispostivo do usuario
-  referenceProfessor.ref(`imprimir/professor/${id}/nome_usuario`).once('value').then(function (snapshot) {
+  // pegar nome do usuario que tem o pedido de impressão igual 'id'
+  referenceProfessor.ref(`imprimir/professor/${id}/nomeUsuario`).once('value').then(function (snapshot) {
     const nome = snapshot.val()
 
+    // pesquisar usuário do firebase com nome igual do pedido de impressão e pegar seu CPF
     referenceProfessor.ref(`usuarios/professor`).orderByChild("nome").equalTo(nome).on('child_added', function(snapshot) {
 
+      // pegar dados do aluno aluno pesquisado
       referenceProfessor.ref(`usuarios/professor/${snapshot.key}`).once("value").then(function(snapshot) {
         const dados = snapshot.val()
 
+        // token usado para enviar notificação para o dispositivo para o usuário
         var registrationToken = dados.tokenNotification
 
+        // dados da notificação
         var payload = {
           notification: {
             title: "PrintUp",
@@ -171,6 +192,7 @@ function arquivoImpressoProfessor(id) {
           }
         }
         
+        // configurações extras da notificação
         var options = {
           priority: "high",
           timeToLive: 60 * 60 *24
@@ -193,23 +215,32 @@ function arquivoImpressoProfessor(id) {
 }
 
 
-// apagar pedido de impressão e arquivo do storage
+// apagar pedido de impressão e arquivo do storage firebase
 async function arquivoEntregueAluno(id) {
-  const banco_dados = firebase.database()
+  const referenceAluno = firebase.database()
   const storage = firebase.storage()
-  await banco_dados.ref(`imprimir/aluno/${id}`).once('value').then(function (snapshot) {
+
+  // pegar dados do pedido de impressão
+  await referenceAluno.ref(`imprimir/aluno/${id}`).once('value').then(function (snapshot) {
     const dados = snapshot.val()
     const url = dados.url
+
+    // extrair nome do arquivo salvo no storage da url
     const sep1 = url.split("aluno%2F").pop()
     var nome_arquivo = sep1.split("?alt").shift()
 
-    banco_dados.ref(`imprimir/aluno/${id}`).remove()
+    // remover arquivo da lista de impressão firebase database
+    referenceAluno.ref(`imprimir/aluno/${id}`).remove()
     .then(function() {
+
+      // remover arquivo do storage do firebase
       storage.ref(`imprimir/aluno/${nome_arquivo}`).delete()
       .then(function () {
+        alert("Arquivo apagado com sucesso!")
         window.location.reload()
       })
       .catch(function (error) {
+        alert("Erro ao apagar arquivo!")
         window.location.reload()
       })
     })
@@ -220,24 +251,33 @@ async function arquivoEntregueAluno(id) {
 }
 
 
-// apagar pedido de impressão e arquivo do storage
+// apagar pedido de impressão e arquivo do storage firebase
 async function arquivoEntregueProfessor(id) {
-  const banco_dados = firebase.database()
+  const referenceProfessor = firebase.database()
   const storage = firebase.storage()
-  await banco_dados.ref(`imprimir/professor/${id}`).once('value').then(function (snapshot) {
+
+  // pegar dados do pedido de impressão
+  await referenceProfessor.ref(`imprimir/professor/${id}`).once('value').then(function (snapshot) {
     const dados = snapshot.val()
     const url = dados.url
+
+    // extrair nome do arquivo salvo no storage da url
     const sep1 = url.split("professor%2F").pop()
     var nome_arquivo = sep1.split("?alt").shift()
 
-    banco_dados.ref(`imprimir/professor/${id}`).remove()
+    // remover arquivo da lista de impressão firebase database
+    referenceProfessor.ref(`imprimir/professor/${id}`).remove()
     .then(function() {
+
+      // remover arquivo do storage do firebase
       storage.ref(`imprimir/professor/${nome_arquivo}`).delete()
       .then(function () {
+        alert("Arquivo apagado com sucesso!")
         window.location.reload()
       })
       .catch(function (error) {
         alert("Erro ao apagar arquivo!")
+        window.location.reload()
       })
     })
     .catch(function(error) {
@@ -248,23 +288,28 @@ async function arquivoEntregueProfessor(id) {
 
 
 // abrir arquivo selecionado
-async function imprimir(nome_arquivo) {
-  extensao = pegarExtensao(nome_arquivo)
-  
+async function imprimir(url) {
+  extensao = await pegarExtensao(url)
+
   //Salvar o arquivo no disco e abrir com openExternal
 
   //Fazer download do arquivo usando o modulo request (npm install requests --save)
 
   // Ultima coisa: Detectar o formato do arquivo para salvar no sistema de arquivos com a extensão correta.
 
+  // caminho do arquivo
   const filePath = `meuarquivo${extensao}`
-  const file = fs.createWriteStream(filePath);
-  const request = await http.get(nome_arquivo, function(response) {
+
+  // criação do arquivo em disco
+  const file = fs.createWriteStream(filePath)
+
+  // requisição http para a url do arquivo selecionado
+  const request = await http.get(url, function(response) {
     response.pipe(file);
 
+    // abrir arquivo com programa externo
     shell.openExternal(filePath)
   })
-  window.location.reload()
 }
 
 // função para pegar extensão do arquivo a ser aberto

@@ -10,19 +10,11 @@ import androidx.viewpager.widget.ViewPager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.EventLogTags;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.tcc_marcos_willian.Fragments.FragmentPagerAdapterAluno;
 import com.example.tcc_marcos_willian.R;
@@ -35,9 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class Menu_Aluno extends AppCompatActivity {
 
-    TabLayout tabLayout;
-    ViewPager viewPager;
-    DatabaseReference referenceMudanca;
+    TabLayout tabLayout_menuAluno;
+    ViewPager viewPager_menuAluno;
+    DatabaseReference reference_notification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,16 +37,31 @@ public class Menu_Aluno extends AppCompatActivity {
         setContentView(R.layout.menu__aluno);
 
         vincularComponentes();
-
-        criarAdapter();
-
         inicializarFirebase();
-
+        criarAdapter();
         verificarMudancasFirebase();
     }
 
+    // vincular componentes da activity
+    private void vincularComponentes() {
+        tabLayout_menuAluno = findViewById(R.id.tabLayout_menuAluno);
+        viewPager_menuAluno = findViewById(R.id.viewPager_menuAluno);
+    }
+
+    // inicializar variáveis do firebase
+    private void inicializarFirebase() {
+        reference_notification = FirebaseDatabase.getInstance().getReference();
+    }
+
+    // criar adaptador para exibir fragment na activity
+    private void criarAdapter() {
+        viewPager_menuAluno.setAdapter(new FragmentPagerAdapterAluno(getSupportFragmentManager(), getResources().getStringArray(R.array.titulos_menu)));
+        tabLayout_menuAluno.setupWithViewPager(viewPager_menuAluno);
+    }
+
+    // monitorar mudanças no status de alguma impressão e notificar o aluno caso mude
     private void verificarMudancasFirebase() {
-        referenceMudanca.child("imprimir").child("aluno").orderByChild("nome_usuario").equalTo(pegarSharedPreference())
+        reference_notification.child("imprimir").child("aluno").orderByChild("nomeUsuario").equalTo(nomeSharedPreference())
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -66,8 +73,7 @@ public class Menu_Aluno extends AppCompatActivity {
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
 
-                        NotificationManager notificationManager =
-                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                         String channelId = "some_channel_id";
                         CharSequence channelName = "Some Channel";
@@ -80,11 +86,12 @@ public class Menu_Aluno extends AppCompatActivity {
                         notificationManager.createNotificationChannel(notificationChannel);
 
 
+                        // criação da notificação
                         NotificationCompat.Builder mBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(Menu_Aluno.this, notificationChannel.getId())
                                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                                .setContentTitle("Printup")
+                                .setContentTitle(getString(R.string.tx_tituloNotification))
                                 .setDefaults(Notification.DEFAULT_SOUND)
-                                .setContentText("Seu arquivo já foi impresso, pode pegá-lo no xerox")
+                                .setContentText(getString(R.string.tx_corpoNotification))
                                 .setAutoCancel(true);
 
                         NotificationManager mNotifymgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -108,22 +115,9 @@ public class Menu_Aluno extends AppCompatActivity {
                 });
     }
 
-    private void inicializarFirebase() {
-        referenceMudanca = FirebaseDatabase.getInstance().getReference();
-    }
-
-    private void vincularComponentes() {
-        tabLayout = findViewById(R.id.tlt_MenuAluno);
-        viewPager = findViewById(R.id.vpg_MenuAluno);
-    }
-
-    private void criarAdapter() {
-        viewPager.setAdapter(new FragmentPagerAdapterAluno(getSupportFragmentManager(), getResources().getStringArray(R.array.titulos_menu)));
-        tabLayout.setupWithViewPager(viewPager);
-    }
-
-    private String pegarSharedPreference() {
-        SharedPreferences preferences = getSharedPreferences("DadosUsuario", Context.MODE_PRIVATE);
+    // pegar nome guardado na memória da aplicação
+    private String nomeSharedPreference() {
+        SharedPreferences preferences = getSharedPreferences("dadosUsuario", Context.MODE_PRIVATE);
         String nome = preferences.getString("nome", "não encontrado");
         return nome;
     }

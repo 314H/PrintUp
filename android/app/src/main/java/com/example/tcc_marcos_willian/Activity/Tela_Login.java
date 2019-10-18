@@ -3,7 +3,6 @@ package com.example.tcc_marcos_willian.Activity;
 import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -11,27 +10,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.tcc_marcos_willian.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,12 +34,12 @@ import com.google.firebase.iid.InstanceIdResult;
 
 public class Tela_Login extends AppCompatActivity{
 
-    TextInputLayout lt_email, lt_senha;
-    Button bt_logar;
-    TextView tx_criarConta;
-    FirebaseAuth firebaseAuth;
-    DatabaseReference referenceProfessor, referenceAluno, referenceMessaging;
-    LinearLayout linearLayout;
+    TextInputLayout inputLayout_email, inputLayout_cpf;
+    Button button_logar;
+    TextView textView_criarConta;
+    FirebaseAuth auth_login;
+    DatabaseReference reference_professor, reference_aluno, reference_messaging;
+    LinearLayout layout_telaLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,19 +47,17 @@ public class Tela_Login extends AppCompatActivity{
         setContentView(R.layout.tela__login);
 
         vincularComponentes();
-
         criarMascara();
-
         inicializarFirebase();
 
-        bt_logar.setOnClickListener(new View.OnClickListener() {
+        button_logar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 verificarCampos();
             }
         });
 
-        tx_criarConta.setOnClickListener(new View.OnClickListener() {
+        textView_criarConta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 abrirCadastro();
@@ -76,51 +66,56 @@ public class Tela_Login extends AppCompatActivity{
 
     }
 
+    // vincular todos os componentes da activity
     private void vincularComponentes(){
-        lt_email = findViewById(R.id.lyt_EmailLogin);
-        lt_senha = findViewById(R.id.lyt_CPFLogin);
-        bt_logar = findViewById(R.id.btn_Logar);
-        tx_criarConta = findViewById(R.id.txt_CriarConta);
-        linearLayout = findViewById(R.id.layoutTelaLogin);
+        inputLayout_email = findViewById(R.id.inputLayout_emailLogin);
+        inputLayout_cpf = findViewById(R.id.inputLayout_cpfLogin);
+        button_logar = findViewById(R.id.button_logar);
+        textView_criarConta = findViewById(R.id.textView_criarConta);
+        layout_telaLogin = findViewById(R.id.layout_telaLogin);
     }
 
+    // criar mascara de cpf no campo de cpf da activity
     private void criarMascara() {
         SimpleMaskFormatter simpleMaskFormatter = new SimpleMaskFormatter("NNN.NNN.NNN-NN");
-        MaskTextWatcher maskTextWatcher = new MaskTextWatcher(lt_senha.getEditText(), simpleMaskFormatter);
-        lt_senha.getEditText().addTextChangedListener(maskTextWatcher);
+        MaskTextWatcher maskTextWatcher = new MaskTextWatcher(inputLayout_cpf.getEditText(), simpleMaskFormatter);
+        inputLayout_cpf.getEditText().addTextChangedListener(maskTextWatcher);
     }
 
+    // inicializar variáveis do firebase
     private void inicializarFirebase() {
-        referenceProfessor = FirebaseDatabase.getInstance().getReference();
-        referenceAluno = FirebaseDatabase.getInstance().getReference();
-        firebaseAuth = FirebaseAuth.getInstance();
-        referenceMessaging = FirebaseDatabase.getInstance().getReference();
+        reference_professor = FirebaseDatabase.getInstance().getReference();
+        reference_aluno = FirebaseDatabase.getInstance().getReference();
+        reference_messaging = FirebaseDatabase.getInstance().getReference();
+        auth_login = FirebaseAuth.getInstance();
     }
 
+    // verificar se campos estão preenchidos
     private void verificarCampos() {
-        String email = lt_email.getEditText().getText().toString().trim();
-        String senha01 = lt_senha.getEditText().getText().toString().trim();
-        String senha02 = senha01.replace(".", "");
-        String senha03 = senha02.replace(".", "");
-        String senha = senha03.replaceAll("-", "");
+        String email = inputLayout_email.getEditText().getText().toString().trim();
+        String cpf01 = inputLayout_cpf.getEditText().getText().toString().trim();
+        String cpf02 = cpf01.replace(".", "");
+        String cpf03 = cpf02.replace(".", "");
+        String cpf = cpf03.replaceAll("-", "");
 
         if ((!TextUtils.isEmpty(email)) && (email.contains("@")) && (email.contains("."))){
-            lt_email.setError(null);
-            if ((!TextUtils.isEmpty(senha)) && (senha.length()==11)){
-                lt_senha.setError(null);
-                logarUsuario(email, senha);
+            inputLayout_email.setError(null);
+            if ((!TextUtils.isEmpty(cpf)) && (cpf.length()==11)){
+                inputLayout_cpf.setError(null);
+                logarUsuario(email, cpf);
             }else{
-                lt_senha.setError(getString(R.string.tx_erroCampo));
-                lt_senha.requestFocus();
+                inputLayout_cpf.setError(getString(R.string.tx_erroCampo));
+                inputLayout_cpf.requestFocus();
             }
         }else{
-            lt_email.setError(getString(R.string.tx_erroCampo));
-            lt_email.requestFocus();
+            inputLayout_email.setError(getString(R.string.tx_erroCampo));
+            inputLayout_email.requestFocus();
         }
     }
 
+    // fazer login na aplicação
     private void logarUsuario(String AuthEmail, final String AuthSenha) {
-        firebaseAuth.signInWithEmailAndPassword(AuthEmail, AuthSenha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        auth_login.signInWithEmailAndPassword(AuthEmail, AuthSenha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
@@ -132,8 +127,9 @@ public class Tela_Login extends AppCompatActivity{
         });
     }
 
+    // procurar aluno no sistema
     private void procurarAlunoFirebase(final String cpfUsuario) {
-        referenceAluno.child("usuarios").child("aluno").child(cpfUsuario).addValueEventListener(new ValueEventListener() {
+        reference_aluno.child("usuarios").child("aluno").child(cpfUsuario).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null){
@@ -155,8 +151,9 @@ public class Tela_Login extends AppCompatActivity{
         });
     }
 
+    // procurar profesor no firebase
     private void procurarProfessorFirebase(final String cpfUsuario) {
-        referenceProfessor.child("usuarios").child("professor").child(cpfUsuario).addValueEventListener(new ValueEventListener() {
+        reference_professor.child("usuarios").child("professor").child(cpfUsuario).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue() != null){
@@ -179,62 +176,30 @@ public class Tela_Login extends AppCompatActivity{
         });
     }
 
+    // salvar dados do usuário na memória da aplicação
     private void salvarDadosUsuarioSharedPreference(String nome, String cpf, String tipoUsuario) {
-        SharedPreferences preferences = getSharedPreferences("DadosUsuario", Context.MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("dadosUsuario", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("nome", nome);
         editor.putString("cpf", cpf);
         editor.putString("tipo", tipoUsuario);
         editor.apply();
 
-        pegarTokenCloudMessaging(tipoUsuario, cpf);
+        criarTokenCloudMessaging(tipoUsuario, cpf);
     }
 
-    private void abrirMenu(String tipoUsuario) {
-        if (tipoUsuario.equals("professor")){
-            abrirMenuProf();
-        }else if (tipoUsuario.equals("aluno")) {
-            abrirMenuAluno();
-        } else if (tipoUsuario.equals("null")) {
-            abrirSnackbar(getString(R.string.tx_erroLogin));
-        }
-    }
-
-    private void abrirMenuProf(){
-        finish();
-        Intent intent = new Intent(getApplicationContext(),Menu_Professor.class);
-        startActivity(intent);
-    }
-
-    private void abrirMenuAluno(){
-        finish();
-        Intent intent = new Intent(getApplicationContext(),Menu_Aluno.class);
-        startActivity(intent);
-    }
-
-    private void abrirCadastro() {
-        Intent intent = new Intent(getApplicationContext(), Cadastro_Usuario.class);
-        startActivity(intent);
-    }
-
-    private void abrirSnackbar(String mensagem) {
-        InputMethodManager teclado = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        teclado.hideSoftInputFromWindow(lt_email.getEditText().getWindowToken(), 0);
-        Snackbar snackbar = Snackbar.make(linearLayout, mensagem, Snackbar.LENGTH_LONG);
-        snackbar.show();
-    }
-
-    private void pegarTokenCloudMessaging(String tipo, String cpf) {
+    // criar token para envio de notificação
+    private void criarTokenCloudMessaging(String tipo, String cpf) {
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
                         if (!task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), getString(R.string.tx_token), Toast.LENGTH_LONG).show();
+                            abrirSnackbar(getString(R.string.tx_token));
                         }
 
                         String token = task.getResult().getToken();
-                        referenceMessaging.child("usuarios").child(tipo).child(cpf).child("tokenNotification").setValue(token)
+                        reference_messaging.child("usuarios").child(tipo).child(cpf).child("tokenNotification").setValue(token)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
@@ -244,7 +209,7 @@ public class Tela_Login extends AppCompatActivity{
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getApplicationContext(), getString(R.string.tx_token), Toast.LENGTH_LONG).show();
+                                        abrirSnackbar(getString(R.string.tx_token));
                                     }
                                 });
                     }
@@ -255,5 +220,44 @@ public class Tela_Login extends AppCompatActivity{
                         abrirSnackbar(getString(R.string.tx_token));
                     }
                 });
+    }
+
+    // saber qual menu abrir
+    private void abrirMenu(String tipoUsuario) {
+        if (tipoUsuario.equals("professor")){
+            abrirMenuProf();
+        }else if (tipoUsuario.equals("aluno")) {
+            abrirMenuAluno();
+        } else if (tipoUsuario.equals("null")) {
+            abrirSnackbar(getString(R.string.tx_erroLogin));
+        }
+    }
+
+    // abrir menu do professor
+    private void abrirMenuProf(){
+        finish();
+        Intent intent = new Intent(getApplicationContext(),Menu_Professor.class);
+        startActivity(intent);
+    }
+
+    //abrir menu do alunp
+    private void abrirMenuAluno(){
+        finish();
+        Intent intent = new Intent(getApplicationContext(),Menu_Aluno.class);
+        startActivity(intent);
+    }
+
+    // abrir cadastro de usuário
+    private void abrirCadastro() {
+        Intent intent = new Intent(getApplicationContext(), Cadastro_Usuario.class);
+        startActivity(intent);
+    }
+
+    // abrir mensagem no layout da activity
+    private void abrirSnackbar(String mensagem) {
+        InputMethodManager teclado = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        teclado.hideSoftInputFromWindow(inputLayout_email.getEditText().getWindowToken(), 0);
+        Snackbar snackbar = Snackbar.make(layout_telaLogin, mensagem, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 }

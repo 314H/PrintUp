@@ -2,30 +2,35 @@
 <html>
 
 <head>
+  <!-- script para resolver bug com erro do jquery -->
   <script>
     if (typeof module === 'object') {
       window.module = module;
       module = undefined;
     }
   </script>
+
+  <!-- scripts para carregar o jquery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script>
+
+  <!-- arquivos de estilização -->
   <link rel="stylesheet" href="../css/photon.css">
   <link rel="stylesheet" href="../css/syle.css">
   <title>PrintUp</title>
   <meta charset="utf-8">
 </head>
 
-<body onload="carregarFirebase(),
-              usuariosSemCadastro()">
+<body onload="carregarFirebase(), usuariosSemCadastro()">
 
   <div class="window">
+
+    <!-- cabeçalho da página -->
     <header class="toolbar toolbar-header">
       <h1 class="title">CADASTRO</h1>
     </header>
-    <div class="window-content">
 
-      <!-- divisão da janela em painéis -->
+    <div class="window-content">
       <div class="pane-group">
 
         <!-- menu lateral -->
@@ -67,31 +72,33 @@
 
         </div>
 
-           <!-- formulário de cadastro -->
+       <!-- formulário de cadastro -->
        <div class="pane">
         <form id="formCadastroAluno" class="pane-body">
           <legend>Cadastro de Aluno</legend>
+
           <div class="form-group">
-            <input type="text" id="cadastroCPFAluno" class="form-control inputCadastro" placeholder="CPF do Aluno">
-            </input>
+            <input type="text" id="input_cadastroCPFAluno" class="form-control inputCadastro" placeholder="CPF do Aluno" />
           </div>
-          <button type="button" id="cadastrarAluno" onclick="cadastrar()" class="btn btn-positive buttonCadastro">
+
+          <button type="button" id="button_cadastrarAluno" onclick="cadastrar()" class="btn btn-positive buttonCadastro">
             Cadastrar Aluno
           </button>
+
         </form>
        </div>
+
        <div class="pane">
-        <table id="tabelasemcadastro" class="table table-striped">
+        <table id="tabela_alunoSemcadastro" class="table table-striped">
           <thead>
-            <thead>
-              <tr>
-                <th colspan="2">ALUNOS AINDA NÃO CADASTRADOS</th>
-              </tr>
-              <tr>
-                <th>Nome</th>
-                <th>cpf</th>
-              </tr>
-            </thead>
+            <tr>
+              <th colspan="2">ALUNOS AINDA NÃO CADASTRADOS</th>
+            </tr>
+            <tr>
+              <th>Nome</th>
+              <th>cpf</th>
+            </tr>
+          </thead>
           <tbody>
           </tbody>
         </table>

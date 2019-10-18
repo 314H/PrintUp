@@ -1,4 +1,4 @@
-// configuração do firebase
+// configuração e inicialização do firebase
 async function carregarFirebase() {
     const firebaseConfig = {
         apiKey: "AIzaSyBAPrm6tJa59ZRLFGYQz8WHl0OGjYvlmGk",
@@ -14,22 +14,26 @@ async function carregarFirebase() {
 
 
 //máscara para o CPF
-$("#cadastroCPFAluno").mask("000.000.000-00")
+$("#input_cadastroCPFAluno").mask("000.000.000-00")
 
 
 // realizar o cadastro do CPF do aluno no sistema
 async function cadastrar() {
-    const cpfEntrada = document.getElementById('cadastroCPFAluno').value
+    const cpfEntrada = document.getElementById('input_cadastroCPFAluno').value
     const cpfFormatado = retirarCaracteresEspeciais(cpfEntrada)
 
-    const banco_dados = firebase.database()
+    const referenceAluno = firebase.database()
 
+    // CPF tem que ter 11 caracteres para ser válido
     if(cpfFormatado.length != 11) {
         alert('CPF inválido!')
     } else {
-        await banco_dados.ref(`usuarios/aluno/${cpfFormatado}`).once('value').then(function (snapshot) {
+
+        // pesquisar no banco se o usuario já existe
+        await referenceAluno.ref(`usuarios/aluno/${cpfFormatado}`).once('value').then(function (snapshot) {
             const verificarCpf = snapshot.val()
     
+            // se não estiver ainda cadastrado, cria um objeto aluno para cadastro
             if (verificarCpf == null) {
                 let aluno = {
                     nome: '',
@@ -37,7 +41,8 @@ async function cadastrar() {
                     cpf: cpfFormatado
                 }
     
-                banco_dados.ref('usuarios/aluno/').child(aluno.cpf).set(aluno)
+                // cadastrar aluno no firebase database
+                referenceAluno.ref('usuarios/aluno/').child(aluno.cpf).set(aluno)
                     .then(function () {
                         alert(`Cadastro do CPF: ${cpfEntrada} efetuado com sucesso!`)
                         window.location.reload()
@@ -47,7 +52,7 @@ async function cadastrar() {
                     })
             } else {
                 alert(`O CPF: ${cpfEntrada} já existe no sistema!`)
-                document.getElementById('cadastroCPFAluno').focus()
+                document.getElementById('input_cadastroCPFAluno').focus()
             }
         })
     }
@@ -62,28 +67,36 @@ function retirarCaracteresEspeciais(cpfEntrada) {
     return cpfSaida
 }
 
+
+// preencher tabela com alunos que ainda não fizeram cadastro
 (function ($) {
     usuariosSemCadastro = function () {
   
-      const referenceAluno = firebase.database();
-      referenceAluno.ref('usuarios/aluno').once('value').then(function (snapshot) {
+      const referenceAluno = firebase.database()
 
-        const arrayAlunos = snapshot.val();
-        for (const aluno in arrayAlunos) {
-  
-          if ((arrayAlunos[aluno].nome) == "") {
+    // pegar todos os alunos cadastrados no banco
+    referenceAluno.ref('usuarios/aluno').once('value').then(function (snapshot) {
+    const arrayAlunos = snapshot.val()
+
+    // percorrer todos os alunos cadastrados que vieram do banco
+    for (const aluno in arrayAlunos) {
+
+        // se email do aluno for vazio mostra na tabela
+        if ((arrayAlunos[aluno].email) == "") {
+
             var novaLinha = $("<tr>");
             var colunas = "";
-            colunas += '<td>sem cadastro</td>';
-  
-            colunas += '<td>' + arrayAlunos[aluno].cpf + '</td>';
-  
-        
+            colunas += '<td>sem cadastro</td>'
+
+            colunas += `<td>${arrayAlunos[aluno].cpf}</td>`
+
             novaLinha.append(colunas);
-            $('#tabelasemcadastro').append(novaLinha);
-          }
+
+            $('#tabela_alunoSemcadastro').append(novaLinha)
+            
         }
-      })
-      return false;
-    };
-  })(jQuery);
+    }
+    })
+    return false
+}
+})(jQuery)

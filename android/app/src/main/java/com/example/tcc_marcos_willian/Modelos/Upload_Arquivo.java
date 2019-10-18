@@ -1,28 +1,28 @@
 package com.example.tcc_marcos_willian.Modelos;
 
 public class Upload_Arquivo {
-    public String numero_copias;
+    public String numeroCopias;
     public String url;
-    public String nome_usuario;
+    public String nomeUsuario;
     public String status;
 
     public Upload_Arquivo() {
     }
 
-    public String getNome_usuario() {
-        return nome_usuario;
+    public String getNomeUsuario() {
+        return nomeUsuario;
     }
 
-    public void setNome_usuario(String nomeAluno) {
-        this.nome_usuario = nomeAluno;
+    public void setNomeUsuario(String nomeAluno) {
+        this.nomeUsuario = nomeAluno;
     }
 
-    public String getNumero_copias() {
-        return numero_copias;
+    public String getNumeroCopias() {
+        return numeroCopias;
     }
 
-    public void setNumero_copias(String numCopias) {
-        this.numero_copias = numCopias;
+    public void setNumeroCopias(String numCopias) {
+        this.numeroCopias = numCopias;
     }
 
     public String getUrl() {

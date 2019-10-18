@@ -1,4 +1,4 @@
-// configuração do firebase
+// configuração e inicialização do firebase
 async function carregarFirebase() {
     const firebaseConfig = {
         apiKey: "AIzaSyBAPrm6tJa59ZRLFGYQz8WHl0OGjYvlmGk",
@@ -14,90 +14,143 @@ async function carregarFirebase() {
 
 
 //máscara para o CPF
-$("#inputPesquisaCPFProfessor").mask("000.000.000-00");
+$("#input_pesquisaCPFProfessor").mask("000.000.000-00");
 
 
 // pesquisa do professor no firebase
 function pesquisar() {
-    $('#resultadoPesquisaProfessor tbody').remove()
-    const inputNome = document.getElementById('inputPesquisaNomeProfessor').value
-    const cpfEntrada = document.getElementById('inputPesquisaCPFProfessor').value
+    $('#tabela_pesquisaProfessor tbody').remove()
+    const inputNome = document.getElementById('input_pesquisaNomeProfessor').value
+    const cpfEntrada = document.getElementById('input_pesquisaCPFProfessor').value
     const cpfFormatado = retirarCaracteresEspeciais(cpfEntrada)
+
+    // transformar em minusculo
     const nomeMinusculo = inputNome.toLowerCase()
 
     // criar referência para o firebase
-    const banco_dados = firebase.database()
-    const referencia = banco_dados.ref("usuarios/professor/")
-
+    const referencia = firebase.database()
+    const referenciaProfessor = referencia.ref("usuarios/professor/")
 
     if (cpfFormatado == '') {
 
         // pesquisa de professor por nome
-        referencia.orderByChild('nomeLowerCase').startAt(nomeMinusculo).endAt(`${nomeMinusculo}\uf8ff`).on('child_added', function(snapshot) {
+        referenciaProfessor.orderByChild('nomeLowerCase').startAt(nomeMinusculo).endAt(`${nomeMinusculo}\uf8ff`).on('child_added', function(snapshot) {
             
-            banco_dados.ref(`usuarios/professor/${snapshot.key}`).once('value').then(function(snapshot) {
+            // pegar dados do aluno usando a key dos aluno entrado
+            referencia.ref(`usuarios/professor/${snapshot.key}`).once('value').then(function(snapshot) {
                 const resultado = snapshot.val()
 
+                // colocar na tabela os resultados encontrados
                 var novaLinha = $("<tbody><tr>")
+
                 var colunas = ""
-                colunas += '<td>' + ((resultado.nome == '')?'nome indefinido':resultado.nome) + '</td>'
-                colunas += '<td>' + ((resultado.email == '')?'email indefinido':resultado.email) + '</td>'
-                colunas += '<td>' + resultado.cpf + '</td>'
-                colunas += '<td><input type="button" id="' + snapshot.key +
-                    '" class="btn btn-primary" value="Editar" onClick="editar(id)"/></td>'
-                colunas += '<td><input type="button" id="' + snapshot.key +
-                    '" class="btn btn-positive" value="Apagar" onClick="deletar(id)" /></td></tr></tbody>'
 
-                novaLinha.append(colunas);
-                $('#resultadoPesquisaProfessor').append(novaLinha)
+                // se usuario já tiver cadastro aparece seus dados, senão aparece 'indefinido' (if ternário)
+                colunas += `<td>${((resultado.nome == '')?'nome indefinido':resultado.nome)}</td>`
 
+                colunas += `<td>${((resultado.email == '')?'email indefinido':resultado.email)}</td>`
+
+                colunas += `<td>${resultado.cpf}</td>`
+
+                // se email for nulo não oferece opções de editar
+                if(resultado.email == '') {
+                    colunas += "<td>cadastro necessário</ td>"
+                } else {
+                    colunas += `<td><input type="button" id="${snapshot.key}" class="btn btn-primary" value="Editar" onClick="editar(id)" /></td>`
+                }
+
+                colunas += `<td><input type="button" id="${snapshot.key}" class="btn btn-positive" value="Apagar" onClick="deletar(id)" /></td>`
+
+                colunas += "</tr>"
+
+                colunas += "</tbody>"
+
+                novaLinha.append(colunas)
+
+                $('#tabela_pesquisaProfessor').append(novaLinha)
             })
         })
     } else if (inputNome == '') {
 
         // pesquisa de professor por CPF
-        referencia.orderByChild("cpf").startAt(cpfFormatado).endAt(`${cpfFormatado}\uf8ff`).on('child_added', function(snapshot) {
+        referenciaProfessor.orderByChild("cpf").startAt(cpfFormatado).endAt(`${cpfFormatado}\uf8ff`).on('child_added', function(snapshot) {
             
-            banco_dados.ref(`usuarios/professor/${snapshot.key}`).once('value').then(function(snapshot) {
+            // pegar dados do aluno usando a key dos aluno entrado
+            referencia.ref(`usuarios/professor/${snapshot.key}`).once('value').then(function(snapshot) {
                 const resultado = snapshot.val()
-
+        
+                // colocar na tabela os resultados encontrados
                 var novaLinha = $("<tbody><tr>")
-                var colunas = ""
-                colunas += '<td>' + ((resultado.nome == '')?'nome indefinido':resultado.nome) + '</td>'
-                colunas += '<td>' + ((resultado.email == '')?'email indefinido':resultado.email) + '</td>'
-                colunas += '<td>' + resultado.cpf + '</td>'
-                colunas += '<td><input type="button" id="' + snapshot.key +
-                    '" class="btn btn-primary" value="Editar" onClick="editar(id)"/></td>'
-                colunas += '<td><input type="button" id="' + snapshot.key +
-                    '" class="btn btn-positive" value="Apagar" onClick="deletar(id)"/></td></tr></tbody>'
 
+                var colunas = ""
+
+                // se usuario já tiver cadastro aparece seus dados, senão aparece 'indefinido' (if ternário)
+                colunas += `<td>${((resultado.nome == '')?'nome indefinido':resultado.nome)}</td>`
+
+                colunas += `<td>${((resultado.email == '')?'email indefinido':resultado.email)}</td>`
+
+                colunas += `<td>${resultado.cpf}</td>`
+
+                // se email for nulo não oferece opções de editar
+                if(resultado.email == '') {
+                    colunas += "<td>cadastro necessário</ td>"
+                } else {
+                    colunas += `<td><input type="button" id="${snapshot.key}" class="btn btn-primary" value="Editar" onClick="editar(id)" /></td>`
+                }
+
+                colunas += `<td><input type="button" id="${snapshot.key}" class="btn btn-positive" value="Apagar" onClick="deletar(id)" /></td>`
+
+                colunas += "</tr>"
+
+                colunas += "</tbody>"
+        
                 novaLinha.append(colunas);
-                $('#resultadoPesquisaProfessor').append(novaLinha);
+
+                $('#tabela_pesquisaProfessor').append(novaLinha);
             })
         })
     } else if ((cpfFormatado != '') && (inputNome != '')) {
 
         // pesquisa de professor por CPF
-        referencia.orderByChild("cpf").startAt(cpfFormatado).endAt(`${cpfFormatado}\uf8ff`).on('child_added', function(snapshot) {
+        referenciaProfessor.orderByChild("cpf").startAt(cpfFormatado).endAt(`${cpfFormatado}\uf8ff`).on('child_added', function(snapshot) {
             
-            banco_dados.ref(`usuarios/professor/${snapshot.key}`).once('value').then(function(snapshot) {
+            // pegar dados do aluno usando a key dos aluno entrado
+            referencia.ref(`usuarios/professor/${snapshot.key}`).once('value').then(function(snapshot) {
                 const resultado = snapshot.val()
-
+        
+                // colocar na tabela os resultados encontrados
                 var novaLinha = $("<tbody><tr>")
-                var colunas = ""
-                colunas += '<td>' + ((resultado.nome == '')?'nome indefinido':resultado.nome) + '</td>'
-                colunas += '<td>' + ((resultado.email == '')?'email indefinido':resultado.email) + '</td>'
-                colunas += '<td>' + resultado.cpf + '</td>'
-                colunas += '<td><input type="button" id="' + snapshot.key +
-                    '" class="btn btn-primary" value="Editar" onClick="editar(id)"/></td>'
-                colunas += '<td><input type="button" id="' + snapshot.key +
-                    '" class="btn btn-positive" value="Apagar" onClick="deletar(id)"/></td></tr></tbody>'
 
+                var colunas = ""
+
+                // se usuario já tiver cadastro aparece seus dados, senão aparece 'indefinido' (if ternário)
+                colunas += `<td>${((resultado.nome == '')?'nome indefinido':resultado.nome)}</td>`
+
+                colunas += `<td>${((resultado.email == '')?'email indefinido':resultado.email)}</td>`
+
+                colunas += `<td>${resultado.cpf}</td>`
+
+                // se email for nulo não oferece opções de editar
+                if(resultado.email == '') {
+                    colunas += "<td>cadastro necessário</ td>"
+                } else {
+                    colunas += `<td><input type="button" id="${snapshot.key}" class="btn btn-primary" value="Editar" onClick="editar(id)" /></td>`
+                }
+
+                colunas += `<td><input type="button" id="${snapshot.key}" class="btn btn-positive" value="Apagar" onClick="deletar(id)" /></td>`
+                
+                colunas += "</tr>"
+
+                colunas += "</tbody>"
+        
                 novaLinha.append(colunas);
-                $('#resultadoPesquisaProfessor').append(novaLinha);
+
+                $('#tabela_pesquisaProfessor').append(novaLinha);
             })
         })
     } else if ((cpfFormatado == '') && (inputNome == '')) {
+
+        // mensagem mostrada se nenhum parâmetro for adicionado
         alert('Nenhum parâmetro de pesquisa foi adicionado!')
     }
 }
@@ -114,15 +167,16 @@ function retirarCaracteresEspeciais(cpfEntrada) {
 
 // deletar usuario do firebase
 function deletar(id) {
-    const referencia = firebase.database().ref(`usuarios/professor/${id}`)
+    const referenciaProfessor = firebase.database()
 
-    referencia.remove()
+    referenciaProfessor.ref(`usuarios/professor/${id}`).remove()
         .then(function () {
             alert('Usuário apagado com sucesso!')
             window.location.reload()
         })
         .catch(function (error) {
             alert('Erro ao apagar o usuário!')
+            window.location.reload()
         })
 }
 

@@ -5,23 +5,17 @@ import com.github.rtoshiro.util.format.SimpleMaskFormatter;
 import com.github.rtoshiro.util.format.text.MaskTextWatcher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
-import androidx.core.app.TaskStackBuilder;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.tcc_marcos_willian.Modelos.Aluno;
-import com.example.tcc_marcos_willian.Modelos.Professor;
 import com.example.tcc_marcos_willian.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -38,11 +32,11 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Cadastro_Usuario extends AppCompatActivity {
 
-    TextInputLayout lt_nome, lt_email, lt_confirmarCPF;
-    Button bt_cadastrar;
-    DatabaseReference referenceAluno, referenceProfessor, referenceCadastro;
-    FirebaseAuth firebaseAuth;
-    LinearLayout linearLayout;
+    TextInputLayout inputLayout_nome, inputLayout_email, inputLayout_cpf;
+    Button button_cadastrar;
+    DatabaseReference reference_aluno, reference_professor, reference_cadastro;
+    FirebaseAuth auth_criarAutenticacao;
+    LinearLayout layout_cadastro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +44,11 @@ public class Cadastro_Usuario extends AppCompatActivity {
         setContentView(R.layout.cadastro__usuario);
 
         vincularComponentes();
-
         criarMascara();
-
         inicializarFirebase();
 
 
-        bt_cadastrar.setOnClickListener(new View.OnClickListener() {
+        button_cadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 verificarCampos();
@@ -64,65 +56,70 @@ public class Cadastro_Usuario extends AppCompatActivity {
         });
     }
 
+    // vincular componentes da activity
     private void vincularComponentes() {
-        lt_nome = findViewById(R.id.lyt_NomeCadastroUsuario);
-        lt_email = findViewById(R.id.lyt_EmailCadastroUsuario);
-        lt_confirmarCPF = findViewById(R.id.lyt_ConfirmarCPFCadastroUsuario);
-        bt_cadastrar = findViewById(R.id.btn_CadastrarUsuario);
-        linearLayout = findViewById(R.id.layoutCadastroUsuario);
+        inputLayout_nome = findViewById(R.id.inputLayout_nomeCadastro);
+        inputLayout_email = findViewById(R.id.inputLayout_emailCadastro);
+        inputLayout_cpf = findViewById(R.id.inputLayout_cpfCadastro);
+        button_cadastrar = findViewById(R.id.button_cadastrar);
+        layout_cadastro = findViewById(R.id.layout_telaCadastro);
     }
 
+    // criar mascara do campo cpf na activity
     private void criarMascara() {
         SimpleMaskFormatter simpleMaskFormatter = new SimpleMaskFormatter("NNN.NNN.NNN-NN");
-        MaskTextWatcher maskTextWatcher = new MaskTextWatcher(lt_confirmarCPF.getEditText(), simpleMaskFormatter);
-        lt_confirmarCPF.getEditText().addTextChangedListener(maskTextWatcher);
+        MaskTextWatcher maskTextWatcher = new MaskTextWatcher(inputLayout_cpf.getEditText(), simpleMaskFormatter);
+        inputLayout_cpf.getEditText().addTextChangedListener(maskTextWatcher);
     }
 
+    // inicializar variáveis do firebase
     private void inicializarFirebase() {
-        firebaseAuth = FirebaseAuth.getInstance();
-        referenceProfessor = FirebaseDatabase.getInstance().getReference();
-        referenceAluno = FirebaseDatabase.getInstance().getReference();
-        referenceCadastro = FirebaseDatabase.getInstance().getReference();
+        reference_aluno = FirebaseDatabase.getInstance().getReference();
+        reference_professor = FirebaseDatabase.getInstance().getReference();
+        reference_cadastro = FirebaseDatabase.getInstance().getReference();
+        auth_criarAutenticacao = FirebaseAuth.getInstance();
     }
 
+    // verificar se todos os campos foram preenchidos corretamente
     private void verificarCampos() {
-        String nome = lt_nome.getEditText().getText().toString().trim();
-        String email = lt_email.getEditText().getText().toString().trim();
-        String senha01 = lt_confirmarCPF.getEditText().getText().toString().trim();
-        String senha02 = senha01.replace(".", "");
-        String senha03 = senha02.replace(".", "");
-        String cpf = senha03.replaceAll("-", "");
+        String nome = inputLayout_nome.getEditText().getText().toString().trim();
+        String email = inputLayout_email.getEditText().getText().toString().trim();
+        String cpf01 = inputLayout_cpf.getEditText().getText().toString().trim();
+        String cpf02 = cpf01.replace(".", "");
+        String cpf03 = cpf02.replace(".", "");
+        String cpf = cpf03.replaceAll("-", "");
 
         if (!TextUtils.isEmpty(nome)){
-            lt_nome.setError(null);
+            inputLayout_nome.setError(null);
             if ((!TextUtils.isEmpty(email)) && (email.contains("@")) && (email.contains("."))){
-                lt_email.setError(null);
+                inputLayout_email.setError(null);
                 if ((!TextUtils.isEmpty(cpf)) && (cpf.length() == 11)){
-                    lt_confirmarCPF.setError(null);
+                    inputLayout_cpf.setError(null);
                     verificarCadastroProfessor(cpf);
                 }else{
-                    lt_confirmarCPF.setError(getString(R.string.tx_erroCampo));
-                    lt_confirmarCPF.requestFocus();
+                    inputLayout_cpf.setError(getString(R.string.tx_erroCampo));
+                    inputLayout_cpf.requestFocus();
                 }
             }else{
-                lt_email.setError(getString(R.string.tx_erroCampo));
-                lt_email.requestFocus();
+                inputLayout_email.setError(getString(R.string.tx_erroCampo));
+                inputLayout_email.requestFocus();
             }
         }else{
-            lt_nome.setError(getString(R.string.tx_erroCampo));
-            lt_nome.requestFocus();
+            inputLayout_nome.setError(getString(R.string.tx_erroCampo));
+            inputLayout_nome.requestFocus();
         }
     }
 
-
+    // verificar se o usuario é um professor
     private void verificarCadastroProfessor(String cpf) {
-        referenceProfessor.child("usuarios").child("professor").child(cpf)
+        reference_professor.child("usuarios").child("professor").child(cpf)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.getValue() != null){
                         if(dataSnapshot.child("nome").getValue().toString().equals("")) {
-                            completarCadastroUsuario(cpf, "professor");
+                            String email = inputLayout_email.getEditText().getText().toString().trim();
+                            criarAutenticacao(email, cpf, "professor");
                         } else {
                             abrirSnackbar(getString(R.string.tx_erroCadastro));
                         }
@@ -138,14 +135,16 @@ public class Cadastro_Usuario extends AppCompatActivity {
         });
     }
 
+    // verificar se o usuario é um aluno
     private void verificarCadastroAluno(String cpf) {
-        referenceAluno.child("usuarios").child("aluno").child(cpf)
+        reference_aluno.child("usuarios").child("aluno").child(cpf)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue() != null){
                             if(dataSnapshot.child("nome").getValue().toString().equals("")) {
-                                completarCadastroUsuario(cpf, "aluno");
+                                String email = inputLayout_email.getEditText().getText().toString().trim();
+                                criarAutenticacao(email, cpf, "aluno");
                             } else {
                                 abrirSnackbar(getString(R.string.tx_erroCadastro));
                             }
@@ -161,27 +160,16 @@ public class Cadastro_Usuario extends AppCompatActivity {
                 });
     }
 
-    private void completarCadastroUsuario(String cpf, String tipoUsuario) {
-        Usuario usuario = new Usuario();
-        usuario.nome = lt_nome.getEditText().getText().toString().trim();
-        usuario.email = lt_email.getEditText().getText().toString().trim();
-        usuario.cpf = cpf;
-        usuario.nomeLowerCase = usuario.nome.toLowerCase();
-        referenceCadastro.child("usuarios").child(tipoUsuario).child(usuario.cpf).child("email").setValue(usuario.email);
-        referenceCadastro.child("usuarios").child(tipoUsuario).child(usuario.cpf).child("nome").setValue(usuario.nome);
-        referenceCadastro.child("usuarios").child(tipoUsuario).child(usuario.cpf).child("nomeLowerCase").setValue(usuario.nomeLowerCase);
-        criarAutenticacao(usuario.email, usuario.cpf);
-    }
-
-    private void criarAutenticacao(String email, String cpf) {
-        firebaseAuth.createUserWithEmailAndPassword(email, cpf).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+    // criar autenticação do firebase para login do usuario
+    private void criarAutenticacao(String email, String cpf, String tipoUsuario) {
+        auth_criarAutenticacao.createUserWithEmailAndPassword(email, cpf).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
-                    abrirLogin();
+                    completarCadastroUsuario(cpf, tipoUsuario);
                 }else{
                     if (task.getException() instanceof FirebaseAuthUserCollisionException){
-                        abrirSnackbar(getString(R.string.tx_erroUsuario));
+                        abrirSnackbar(getString(R.string.tx_emailCadastrado));
                     }else{
                         abrirSnackbar(getString(R.string.tx_usuarioFalha));
                     }
@@ -190,6 +178,22 @@ public class Cadastro_Usuario extends AppCompatActivity {
         });
     }
 
+    // completar cadastro do usuario no firebase
+    private void completarCadastroUsuario(String cpf, String tipoUsuario) {
+
+        Usuario usuario = new Usuario();
+        usuario.nome = inputLayout_nome.getEditText().getText().toString().trim();
+        usuario.email = inputLayout_email.getEditText().getText().toString().trim();
+        usuario.cpf = cpf;
+        usuario.nomeLowerCase = usuario.nome.toLowerCase();
+
+        reference_cadastro.child("usuarios").child(tipoUsuario).child(usuario.cpf).child("email").setValue(usuario.email);
+        reference_cadastro.child("usuarios").child(tipoUsuario).child(usuario.cpf).child("nome").setValue(usuario.nome);
+        reference_cadastro.child("usuarios").child(tipoUsuario).child(usuario.cpf).child("nomeLowerCase").setValue(usuario.nomeLowerCase);
+        abrirLogin();
+    }
+
+    // abrir tela de login para o usuario e excluir 'pilha de intents' abertas anteriormente
     private void abrirLogin() {
         Toast.makeText(getApplicationContext(), getString(R.string.tx_cadastroSucesso), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext(), Tela_Login.class);
@@ -197,11 +201,12 @@ public class Cadastro_Usuario extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // abrir mensagem no layout da activity
     private void abrirSnackbar(String mensagem) {
         InputMethodManager teclado = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        teclado.hideSoftInputFromWindow(lt_confirmarCPF.getEditText().getWindowToken(), 0);
+        teclado.hideSoftInputFromWindow(inputLayout_cpf.getEditText().getWindowToken(), 0);
 
-        Snackbar snackbar = Snackbar.make(linearLayout, mensagem, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(layout_cadastro, mensagem, Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 

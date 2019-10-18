@@ -2,40 +2,47 @@
 <html>
 
 <head>
+    
+    <!-- script para corrigir bug no jquery -->
     <script>
         if (typeof module === 'object') {
             window.module = module;
             module = undefined;
         }
     </script>
+
+    <!-- scripts para carregar o jquery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script>
+   
+    <!-- arquivos de estilização -->
     <link rel="stylesheet" href="../css/photon.css">
     <link rel="stylesheet" href="../css/syle.css">
     <title>PrintUp</title>
     <meta charset="utf-8">
 </head>
 
-<body onload="carregarFirebase(),
-              carregarDados()">
+<body onload="carregarFirebase(), carregarDados()">
 
     <!-- painel do formulário -->
     <div class="pane-body">
         <form id="formPesquisaProfessor">
+
             <div class="form-group">
-                <input type="text" id="inputEditarNomeProfessor" class="form-control inputCadastro"
-                    placeholder="Editar Nome"></input>
+                <input type="text" id="input_editarNomeProfessor" class="form-control inputCadastro" placeholder="Editar Nome" />
             </div>
+
             <div class="form-group">
-                <input type="text" id="inputEditarEmailProfessor" class="form-control inputCadastro"
-                    placeholder="Editar Email"></input>
+                <input type="text" id="input_editarEmailProfessor" class="form-control inputCadastro" placeholder="Editar Email" />
             </div>
+
             <div class="form-group">
-                <input type="text" id="inputEditarCPFProfessor" class="form-control inputCadastro"
-                    placeholder="Editar CPF"></input>
+                <input type="text" id="input_editarCPFProfessor" class="form-control inputCadastro" placeholder="Editar CPF" />
             </div>
-            <button type="button" id="buttonEditarProfessor" onclick="editar()"
-                class="btn btn-positive buttonCadastro" disabled>Editar</button>
+
+            <button type="button" id="button_editarProfessor" onclick="editar()" class="btn btn-positive buttonCadastro" disabled>
+                Editar
+            </button>
         </form>
     </div>
 </body>

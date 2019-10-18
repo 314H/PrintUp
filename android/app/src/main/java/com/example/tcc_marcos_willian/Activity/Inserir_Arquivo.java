@@ -53,15 +53,15 @@ import java.util.ArrayList;
 
 public class Inserir_Arquivo extends AppCompatActivity {
 
-    TextInputLayout lt_nomeArquivo;
-    Button bt_selecionarPDF, bt_selecionarDOCX, bt_selecionarPPTX, bt_selecionarIMG, bt_apagarArquivo;
-    StorageReference storageReference, referenceArquivo;
-    DatabaseReference databaseReference, referenceArquivos, referenceMudanca;
-    String tipoDocumento, extensao, ext;
-    LinearLayout linearLayout;
-    ListView lv_arquivos;
-    ArrayList<String> arrayArquivos = new ArrayList<String>();
+    TextInputLayout inputLayout_nomeArquivo;
+    Button button_selecionarPDF, button_selecionarDOCX, button_selecionarPPTX, button_selecionarIMG, button_apagarArquivo;
+    StorageReference reference_arquivo;
+    DatabaseReference reference_InserirSistema, reference_lista, reference_notification, reference_apagarArquivo;
+    LinearLayout layout_inserirArquivo;
+    ListView listView_arquivosSistema;
+    ArrayList<String> arrayList = new ArrayList<String>();
     ArrayAdapter<String> arrayAdapter;
+    String tipoDocumento, extensao, ext;
     int posicao;
     String nomeArquivo;
 
@@ -78,7 +78,7 @@ public class Inserir_Arquivo extends AppCompatActivity {
         preencherArrayList();
         verificarMudancasFirebase();
 
-        bt_selecionarPDF.setOnClickListener(new View.OnClickListener() {
+        button_selecionarPDF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tipoDocumento = "application/pdf";
@@ -87,7 +87,7 @@ public class Inserir_Arquivo extends AppCompatActivity {
             }
         });
 
-        bt_selecionarDOCX.setOnClickListener(new View.OnClickListener() {
+        button_selecionarDOCX.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tipoDocumento = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -96,7 +96,7 @@ public class Inserir_Arquivo extends AppCompatActivity {
             }
         });
 
-        bt_selecionarPPTX.setOnClickListener(new View.OnClickListener() {
+        button_selecionarPPTX.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tipoDocumento = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
@@ -105,7 +105,7 @@ public class Inserir_Arquivo extends AppCompatActivity {
             }
         });
 
-        bt_selecionarIMG.setOnClickListener(new View.OnClickListener() {
+        button_selecionarIMG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tipoDocumento = "image/*";
@@ -114,29 +114,99 @@ public class Inserir_Arquivo extends AppCompatActivity {
             }
         });
 
-        lv_arquivos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView_arquivosSistema.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 posicao = position;
-                nomeArquivo = arrayArquivos.get(position);
+                nomeArquivo = arrayList.get(position);
             }
         });
 
-        bt_apagarArquivo.setOnClickListener(new View.OnClickListener() {
+        button_apagarArquivo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (posicao!=-1) {
-                    String nome = pegarSharedPreference();
+                    String nome = nomeSharedPreference();
                     apagarArquivoFirebase(nomeArquivo, nome);
                 } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.tx_selecionarArquivoSistema), Toast.LENGTH_SHORT).show();
+                    abrirSnackbar(getString(R.string.tx_selecionarArquivoSistema));
                 }
             }
         });
     }
 
+    // vincular componentes da activity
+    private void vincularComponentes() {
+        inputLayout_nomeArquivo = findViewById(R.id.inputLayout_nomeArquivoInserirArquivo);
+        button_selecionarPDF = findViewById(R.id.button_selecionarPDFInserirArquivo);
+        button_selecionarDOCX = findViewById(R.id.button_selecionarDOCXInserirArquivo);
+        button_selecionarPPTX = findViewById(R.id.button_selecionarPPTXInserirArquivo);
+        button_selecionarIMG = findViewById(R.id.button_selecionarIMGInserirArquivo);
+        layout_inserirArquivo = findViewById(R.id.layout_inserirArquivo);
+        listView_arquivosSistema = findViewById(R.id.listView_arquivosCadastradosProfessor);
+        button_apagarArquivo = findViewById(R.id.button_apagarArquivoProfessor);
+    }
+
+    // inicializar variaveis do firebase
+    private void inicializarFirebase() {
+        reference_InserirSistema = FirebaseDatabase.getInstance().getReference();
+        reference_lista = FirebaseDatabase.getInstance().getReference();
+        reference_notification = FirebaseDatabase.getInstance().getReference();
+        reference_apagarArquivo = FirebaseDatabase.getInstance().getReference();
+        reference_arquivo = FirebaseStorage.getInstance().getReference();
+    }
+
+    // criar adapter para preencher listView
+    private void criarArrayAdapter() {
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, arrayList);
+        listView_arquivosSistema.setAdapter(arrayAdapter);
+    }
+
+    // prencher arraylist de arquivos do professor
+    private void preencherArrayList() {
+        arrayList.clear();
+        String nome = nomeSharedPreference();
+
+        reference_lista.child("sistema").child(nome).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String nomeArquivoFirebase = dataSnapshot.getKey();
+                arrayList.add(nomeArquivoFirebase);
+                arrayAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(getApplicationContext(), "Erro: "+databaseError.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // pegar nome do usuario logado
+    private String nomeSharedPreference() {
+        SharedPreferences preferences = getSharedPreferences("dadosUsuario", Context.MODE_PRIVATE);
+        String nome = preferences.getString("nome", "não encontrado");
+        return nome;
+    }
+
+    // monitorar mudanças no status de alguma impressão e notificar o professor caso mude
     private void verificarMudancasFirebase() {
-        referenceMudanca.child("imprimir").child("professor").orderByChild("nome_usuario").equalTo(pegarSharedPreference())
+        reference_notification.child("imprimir").child("professor").orderByChild("nomeUsuario").equalTo(nomeSharedPreference())
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -148,8 +218,7 @@ public class Inserir_Arquivo extends AppCompatActivity {
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
 
-                        NotificationManager notificationManager =
-                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                         String channelId = "some_channel_id";
                         CharSequence channelName = "Some Channel";
@@ -161,7 +230,7 @@ public class Inserir_Arquivo extends AppCompatActivity {
                         notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
                         notificationManager.createNotificationChannel(notificationChannel);
 
-
+                        // criar notificação para o usuario
                         NotificationCompat.Builder mBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(Inserir_Arquivo.this, notificationChannel.getId())
                                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                                 .setContentTitle("Printup")
@@ -190,8 +259,94 @@ public class Inserir_Arquivo extends AppCompatActivity {
                 });
     }
 
+    // verificar se campo foi preenchido
+    private void verificarCampo() {
+        String nomeArquivo = inputLayout_nomeArquivo.getEditText().getText().toString().trim();
+
+        if (!TextUtils.isEmpty(nomeArquivo)){
+            if((nomeArquivo.contains(".")) || (nomeArquivo.contains("#")) || (nomeArquivo.contains("$")) || (nomeArquivo.contains("[")) || (nomeArquivo.contains("]"))) {
+                inputLayout_nomeArquivo.setError(getString(R.string.tx_nomeArquivo));
+                inputLayout_nomeArquivo.requestFocus();
+            } else {
+                inputLayout_nomeArquivo.setError(null);
+                abrirSelecaoArquivo();
+            }
+        }else{
+            inputLayout_nomeArquivo.setError(getString(R.string.tx_erroCampo));
+            inputLayout_nomeArquivo.requestFocus();
+        }
+    }
+
+    // abrir midia do celular para selecionar arquivo
+    private void abrirSelecaoArquivo() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType(tipoDocumento);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.tx_selecionarArquivo)), 1);
+    }
+
+    // pegar arquivo selecionado
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
+            enviarArquivo(data.getData());
+        }
+    }
+
+    // salvar arquivo no storage do firebase
+    private void enviarArquivo(Uri data) {
+        String nome = nomeSharedPreference();
+
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle(getString(R.string.tx_enviando));
+        progressDialog.show();
+
+        reference_arquivo.child("sistema").child(nome).child(inputLayout_nomeArquivo.getEditText().getText().toString()+extensao).putFile(data)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    salvarArquivoFirebaseDatabase(taskSnapshot);
+                    Abrirmenu();
+                    progressDialog.dismiss();
+                }
+                })
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0*taskSnapshot.getBytesTransferred())/taskSnapshot.getTotalByteCount();
+                        progressDialog.setMessage(getString(R.string.tx_progressoDialog)+" "+(int)progress+getString(R.string.tx_porcento));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        abrirSnackbar(getString(R.string.tx_erroUpload)+" "+e.toString());
+                        progressDialog.dismiss();
+                    }
+                });
+    }
+
+    // salvar arquivo no realtime do firebase
+    private void salvarArquivoFirebaseDatabase(UploadTask.TaskSnapshot taskSnapshot) {
+        String nome = nomeSharedPreference();
+
+        Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
+        while (!uri.isComplete());
+        Uri url = uri.getResult();
+        Upload_Sistema upload = new Upload_Sistema();
+        upload.url = url.toString();
+        upload.nomeArquivo = inputLayout_nomeArquivo.getEditText().getText().toString();
+
+        reference_InserirSistema.child("sistema").child(nome).child(inputLayout_nomeArquivo.getEditText().getText().toString()).setValue(upload);
+        abrirSnackbar(getString(R.string.tx_UploadComSucesso));
+    }
+
+    // apagar arquivo cadastrado pelo professor do firebase database e storage
     private void apagarArquivoFirebase(String nomeArquivo, String nome) {
-        referenceArquivos.child("sistema").child(nome).child(nomeArquivo)
+
+        // pegar extensão do arquivo
+        reference_apagarArquivo.child("sistema").child(nome).child(nomeArquivo)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -214,19 +369,21 @@ public class Inserir_Arquivo extends AppCompatActivity {
                     }
                 });
 
-        referenceArquivos.child("sistema").child(nome).child(nomeArquivo).removeValue()
+        // apagar arquivo do database
+        reference_apagarArquivo.child("sistema").child(nome).child(nomeArquivo).removeValue()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         String nomeCompletoArquivo = nomeArquivo+ext;
 
-                        referenceArquivo.child("sistema").child(nome).child(nomeCompletoArquivo).delete()
+                        // apagar arquivo do storage
+                        reference_arquivo.child("sistema").child(nome).child(nomeCompletoArquivo).delete()
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         criarArrayAdapter();
                                         preencherArrayList();
-                                        Toast.makeText(getApplicationContext(), getString(R.string.tx_apagadoSucesso), Toast.LENGTH_LONG).show();
+                                        abrirSnackbar(getString(R.string.tx_apagadoSucesso));
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -245,155 +402,19 @@ public class Inserir_Arquivo extends AppCompatActivity {
                 });
     }
 
-    private void preencherArrayList() {
-        arrayArquivos.clear();
-        String nome = pegarSharedPreference();
-        referenceArquivos.child("sistema").child(nome).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String key = dataSnapshot.getKey();
-                arrayArquivos.add(key);
-                arrayAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getApplicationContext(), "Erro: "+databaseError.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void criarArrayAdapter() {
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, arrayArquivos);
-        lv_arquivos.setAdapter(arrayAdapter);
-    }
-
-    private void vincularComponentes() {
-        lt_nomeArquivo = findViewById(R.id.lyt_NomeArquivoInserirArquivo);
-        bt_selecionarPDF = findViewById(R.id.btn_SelecionarPDFInserirArquivo);
-        bt_selecionarDOCX = findViewById(R.id.btn_SelecionarDOCXInserirArquivo);
-        bt_selecionarPPTX = findViewById(R.id.btn_SelecionarPPTXInserirArquivo);
-        bt_selecionarIMG = findViewById(R.id.btn_SelecionarIMGInserirArquivo);
-        linearLayout = findViewById(R.id.layoutInserirArquivo);
-        lv_arquivos = findViewById(R.id.ltv_ArquivosCadastradosProfessor);
-        bt_apagarArquivo = findViewById(R.id.btn_ApagarArquivoProfessor);
-    }
-
-    private void inicializarFirebase() {
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        storageReference = FirebaseStorage.getInstance().getReference();
-        referenceArquivos = FirebaseDatabase.getInstance().getReference();
-        referenceMudanca = FirebaseDatabase.getInstance().getReference();
-        referenceArquivo = FirebaseStorage.getInstance().getReference();
-    }
-
-    private String pegarSharedPreference() {
-        SharedPreferences preferences = getSharedPreferences("DadosUsuario", Context.MODE_PRIVATE);
-        String nome = preferences.getString("nome", "não encontrado");
-        return nome;
-    }
-
-    private void verificarCampo() {
-        String nomeArquivo = lt_nomeArquivo.getEditText().getText().toString().trim();
-
-        if (!TextUtils.isEmpty(nomeArquivo)){
-            if((nomeArquivo.contains(".")) || (nomeArquivo.contains("#")) || (nomeArquivo.contains("$")) || (nomeArquivo.contains("[")) || (nomeArquivo.contains("]"))) {
-                lt_nomeArquivo.setError(getString(R.string.tx_erroCampo));
-                lt_nomeArquivo.requestFocus();
-            } else {
-                lt_nomeArquivo.setError(null);
-                abrirSelecaoArquivo();
-            }
-        }else{
-            lt_nomeArquivo.setError(getString(R.string.tx_erroCampo));
-            lt_nomeArquivo.requestFocus();
-        }
-    }
-
-    private void abrirSelecaoArquivo() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType(tipoDocumento);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(Intent.createChooser(intent, getString(R.string.tx_selecionarArquivo)), 1);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1 && resultCode == RESULT_OK && data != null && data.getData() != null){
-            enviarArquivo(data.getData());
-        }
-    }
-
-    private void enviarArquivo(Uri data) {
-        String nome = pegarSharedPreference();
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle(getString(R.string.tx_enviando));
-        progressDialog.show();
-
-        storageReference.child("sistema").child(nome)
-                .child(lt_nomeArquivo.getEditText().getText().toString()+extensao)
-                .putFile(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    salvarImpressaoNoFirebaseDatabase(taskSnapshot);
-                    Abrirmenu();
-                    progressDialog.dismiss();
-                }
-            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    double progress = (100.0*taskSnapshot.getBytesTransferred())/taskSnapshot.getTotalByteCount();
-                    progressDialog.setMessage(getString(R.string.tx_progressoDialog)+" "+(int)progress+getString(R.string.tx_porcento));
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    abrirSnackbar(getString(R.string.tx_erroUpload)+" "+e.toString());
-                    progressDialog.dismiss();
-                }
-            });
-    }
-
-    private void salvarImpressaoNoFirebaseDatabase(UploadTask.TaskSnapshot taskSnapshot) {
-        String nome = pegarSharedPreference();
-        Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
-        while (!uri.isComplete());
-        Uri url = uri.getResult();
-        Upload_Sistema upload = new Upload_Sistema();
-        upload.url = url.toString();
-        upload.nome_Arquivo = lt_nomeArquivo.getEditText().getText().toString();
-        databaseReference.child("sistema").child(nome)
-                .child(lt_nomeArquivo.getEditText().getText().toString()).setValue(upload);
-        abrirSnackbar(getString(R.string.tx_UploadComSucesso));
-    }
-
+    // abrir menu do professor e apagar 'pilha de activities' anteriores
     private void Abrirmenu() {
         Intent intent = new Intent(getApplicationContext(), Menu_Professor.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 
+    // mostrar mensagem no layout da activity
     private void abrirSnackbar(String mensagem) {
         InputMethodManager teclado = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        teclado.hideSoftInputFromWindow(lt_nomeArquivo.getEditText().getWindowToken(), 0);
+        teclado.hideSoftInputFromWindow(inputLayout_nomeArquivo.getEditText().getWindowToken(), 0);
 
-        Snackbar snackbar = Snackbar.make(linearLayout, mensagem, Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(layout_inserirArquivo, mensagem, Snackbar.LENGTH_LONG);
         snackbar.show();
     }
 }

@@ -36,10 +36,10 @@ import java.util.ArrayList;
 
 public class Lista_Impressao extends AppCompatActivity {
 
-    ListView lv_arquivos;
+    ListView listView_arquivos;
     ArrayList<String> arrayList = new ArrayList<String>();
     ArrayAdapter<String> arrayAdapter;
-    DatabaseReference referenceArquivos, referenceMudanca;
+    DatabaseReference reference_arquivos, reference_notification;
     int i = 0;
 
     @Override
@@ -48,17 +48,108 @@ public class Lista_Impressao extends AppCompatActivity {
         setContentView(R.layout.lista__impressao);
 
         vincularComponentes();
-
         inicializarFirebase();
-
         preencherArrayList();
         criarArrayAdapter();
-
         verificarMudancasFirebase();
     }
 
+    // vincular componentes da activity
+    private void vincularComponentes() {
+        listView_arquivos = findViewById(R.id.listView_arquivosImpressao);
+    }
+
+    // inicializar variaveis firebase
+    private void inicializarFirebase() {
+        reference_arquivos = FirebaseDatabase.getInstance().getReference();
+        reference_notification = FirebaseDatabase.getInstance().getReference();
+    }
+
+    // preencher lista de arquivos enviados para impressão firebase
+    private void preencherArrayList() {
+        String tipo = pegarTipoIntent();
+        String nomeUsuario = nomeSharedPreference();
+
+        reference_arquivos.child("imprimir").child(tipo).orderByChild("nomeUsuario").equalTo(nomeUsuario)
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        reference_arquivos.child("imprimir").child(tipo).child(dataSnapshot.getKey().toString())
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        String nome = dataSnapshot.child("nomeUsuario").getValue().toString();
+                                        String status = dataSnapshot.child("status").getValue().toString();
+                                        String url = dataSnapshot.child("url").getValue().toString();
+                                        String ext = "";
+
+                                        if(url.contains(".docx")) {
+                                            ext = ".docx";
+                                        } else {
+                                            ext = ".pdf";
+                                        }
+
+                                        if(nomeUsuario.equals(nome)){
+                                            i = i +1;
+                                            String nomeLista = "arquivo"+ i +ext+" -- "+status;
+                                            arrayList.add(nomeLista);
+                                            arrayAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    // pegar tipo de usuario que chamou a intent(aluno ou professor)
+    private String pegarTipoIntent() {
+        Intent intent = getIntent();
+        String tipo = intent.getStringExtra("tipo");
+        return tipo;
+    }
+
+    // pegar nome do usuario salvo na memoria da aplicação
+    private String nomeSharedPreference() {
+        SharedPreferences preferences = getSharedPreferences("dadosUsuario", Context.MODE_PRIVATE);
+        String nome = preferences.getString("nome", "não encontrado");
+        return nome;
+    }
+
+    // criar adapter para prencher listiView
+    private void criarArrayAdapter() {
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, arrayList);
+        listView_arquivos.setAdapter(arrayAdapter);
+    }
+
+    // monitorar mudanças no status de alguma impressão e notificar o aluno caso mude
     private void verificarMudancasFirebase() {
-        referenceMudanca.child("imprimir").child("aluno").orderByChild("nome_usuario").equalTo(pegarSharedPreference())
+        reference_notification.child("imprimir").child("aluno").orderByChild("nomeUsuario").equalTo(nomeSharedPreference())
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -70,8 +161,7 @@ public class Lista_Impressao extends AppCompatActivity {
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
 
-                        NotificationManager notificationManager =
-                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                         String channelId = "some_channel_id";
                         CharSequence channelName = "Some Channel";
@@ -83,12 +173,12 @@ public class Lista_Impressao extends AppCompatActivity {
                         notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
                         notificationManager.createNotificationChannel(notificationChannel);
 
-
+                        // criar notificação para o usuario
                         NotificationCompat.Builder mBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(Lista_Impressao.this, notificationChannel.getId())
                                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                                .setContentTitle("Printup")
+                                .setContentTitle(getString(R.string.tx_tituloNotification))
                                 .setDefaults(Notification.DEFAULT_SOUND)
-                                .setContentText("Seu arquivo já foi impresso, pode pegá-lo no xerox")
+                                .setContentText(getString(R.string.tx_corpoNotification))
                                 .setAutoCancel(true);
 
                         NotificationManager mNotifymgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -110,81 +200,5 @@ public class Lista_Impressao extends AppCompatActivity {
 
                     }
                 });
-    }
-
-
-    private void inicializarFirebase() {
-        referenceArquivos = FirebaseDatabase.getInstance().getReference();
-        referenceMudanca = FirebaseDatabase.getInstance().getReference();
-    }
-
-    private String pegarTipoIntent() {
-        Intent intent = getIntent();
-        String tipo = intent.getStringExtra("tipo");
-        return tipo;
-    }
-
-    private void criarArrayAdapter() {
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_activated_1, arrayList);
-        lv_arquivos.setAdapter(arrayAdapter);
-    }
-
-    private void preencherArrayList() {
-        String tipo = pegarTipoIntent();
-        String nomeUsuario = pegarSharedPreference();
-
-        referenceArquivos.child("imprimir").child(tipo)
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                        String nome = dataSnapshot.child("nome_usuario").getValue().toString();
-                        String status = dataSnapshot.child("status").getValue().toString();
-                        String url = dataSnapshot.child("url").getValue().toString();
-                        String ext = "";
-
-                        if(url.contains(".docx")) {
-                            ext = ".docx";
-                        } else {
-                            ext = ".pdf";
-                        }
-
-                        if((nomeUsuario.equals(nome)) && (!status.equals("entregue"))){
-                            i = i +1;
-                            String nomeLista = "arquivo"+ i +ext+" -- "+status;
-                            arrayList.add(nomeLista);
-                            arrayAdapter.notifyDataSetChanged();
-                        }
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-    }
-
-    private void vincularComponentes() {
-        lv_arquivos = findViewById(R.id.ltv_NomeArquivos);
-    }
-
-    private String pegarSharedPreference() {
-        SharedPreferences preferences = getSharedPreferences("DadosUsuario", Context.MODE_PRIVATE);
-        String nome = preferences.getString("nome", "não encontrado");
-        return nome;
     }
 }

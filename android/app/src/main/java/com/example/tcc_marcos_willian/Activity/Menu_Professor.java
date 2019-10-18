@@ -30,9 +30,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class Menu_Professor extends AppCompatActivity {
 
-    TabLayout tabLayout;
-    ViewPager viewPager;
-    DatabaseReference referenceMudanca;
+    TabLayout tabLayout_menuProfessor;
+    ViewPager viewPager_menuProfessor;
+    DatabaseReference reference_notification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,17 +40,32 @@ public class Menu_Professor extends AppCompatActivity {
         setContentView(R.layout.menu__professor);
 
         vincularComponentes();
-
-        criarAdapter();
-
         inicializarFirebase();
-
+        criarAdapter();
         verificarMudancasFirebase();
 
     }
 
+    // vincular componentes da activity
+    private void vincularComponentes() {
+        tabLayout_menuProfessor = findViewById(R.id.tabLayout_menuProfessor);
+        viewPager_menuProfessor = findViewById(R.id.viewPager_menuProfessor);
+    }
+
+    // inicializar variaveis do firebase
+    private void inicializarFirebase() {
+        reference_notification = FirebaseDatabase.getInstance().getReference();
+    }
+
+    // criar adaptador para exibir fragment dentro da activity
+    private void criarAdapter() {
+        viewPager_menuProfessor.setAdapter(new FragmentPagerAdapterProfessor(getSupportFragmentManager(), getResources().getStringArray(R.array.titulos_menu)));
+        tabLayout_menuProfessor.setupWithViewPager(viewPager_menuProfessor);
+    }
+
+    // monitorar mudanças no status de alguma impressão e notificar o professor caso mude
     private void verificarMudancasFirebase() {
-        referenceMudanca.child("imprimir").child("professor").orderByChild("nome_usuario").equalTo(pegarSharedPreference())
+        reference_notification.child("imprimir").child("professor").orderByChild("nomeUsuario").equalTo(nomeSharedPreference())
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -62,8 +77,7 @@ public class Menu_Professor extends AppCompatActivity {
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
 
-                        NotificationManager notificationManager =
-                                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                         String channelId = "some_channel_id";
                         CharSequence channelName = "Some Channel";
@@ -75,12 +89,12 @@ public class Menu_Professor extends AppCompatActivity {
                         notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
                         notificationManager.createNotificationChannel(notificationChannel);
 
-
+                        // criação da notificação para o usuario
                         NotificationCompat.Builder mBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(Menu_Professor.this, notificationChannel.getId())
                                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                                .setContentTitle("Printup")
+                                .setContentTitle(getString(R.string.tx_tituloNotification))
                                 .setDefaults(Notification.DEFAULT_SOUND)
-                                .setContentText("Seu arquivo já foi impresso, pode pegá-lo no xerox")
+                                .setContentText(getString(R.string.tx_corpoNotification))
                                 .setAutoCancel(true);
 
                         NotificationManager mNotifymgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -104,22 +118,9 @@ public class Menu_Professor extends AppCompatActivity {
                 });
     }
 
-    private void inicializarFirebase() {
-        referenceMudanca = FirebaseDatabase.getInstance().getReference();
-    }
-
-    private void vincularComponentes() {
-        tabLayout = findViewById(R.id.tlt_MenuProfessor);
-        viewPager = findViewById(R.id.vpg_MenuProfessor);
-    }
-
-    private void criarAdapter() {
-        viewPager.setAdapter(new FragmentPagerAdapterProfessor(getSupportFragmentManager(), getResources().getStringArray(R.array.titulos_menu)));
-        tabLayout.setupWithViewPager(viewPager);
-    }
-
-    private String pegarSharedPreference() {
-        SharedPreferences preferences = getSharedPreferences("DadosUsuario", Context.MODE_PRIVATE);
+    // pegar nome do usuario logado
+    private String nomeSharedPreference() {
+        SharedPreferences preferences = getSharedPreferences("dadosUsuario", Context.MODE_PRIVATE);
         String nome = preferences.getString("nome", "não encontrado");
         return nome;
     }

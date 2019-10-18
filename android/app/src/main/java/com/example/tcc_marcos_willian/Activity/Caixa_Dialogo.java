@@ -20,9 +20,9 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class Caixa_Dialogo extends AppCompatDialogFragment {
 
-    private TextInputLayout lt_numeroCopias;
-    pegarNumeroCopias numeroCopias;
-    LinearLayout linearLayout;
+    private TextInputLayout inputLayout_numeroCopias;
+    pegarNumeroCopias retornaNumeroCopias;
+    LinearLayout layout_caixaDialogo;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
@@ -42,16 +42,16 @@ public class Caixa_Dialogo extends AppCompatDialogFragment {
         builder.setPositiveButton(getString(R.string.tx_enviar), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-            String numCopias = lt_numeroCopias.getEditText().getText().toString().trim();
+            String numeroCopias = inputLayout_numeroCopias.getEditText().getText().toString().trim();
 
-            if (!TextUtils.isEmpty(numCopias)){
-                if(numCopias.equals("0")) {
+            if (!TextUtils.isEmpty(numeroCopias)){
+                if(numeroCopias.equals("0")) {
                     Toast.makeText(getContext(), getString(R.string.tx_erroCampo), Toast.LENGTH_LONG).show();
-                } else if(numCopias.equals("00")) {
+                } else if(numeroCopias.equals("00")) {
                     Toast.makeText(getContext(), getString(R.string.tx_erroCampo), Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getContext(), getString(R.string.tx_enviando), Toast.LENGTH_LONG).show();
-                    numeroCopias.retornaNumeroCopias(numCopias);
+                    retornaNumeroCopias.retornaNumeroCopias(numeroCopias);
                 }
             }else{
                 Toast.makeText(getContext(), getString(R.string.tx_erroCampo), Toast.LENGTH_LONG).show();
@@ -59,8 +59,8 @@ public class Caixa_Dialogo extends AppCompatDialogFragment {
             }
         });
 
-        lt_numeroCopias = view.findViewById(R.id.lyt_NumeroCopiasCaixaDialogo);
-        linearLayout = view.findViewById(R.id.layoutArquivoProfessor);
+        inputLayout_numeroCopias = view.findViewById(R.id.inputLayout_numeroCopiasCaixaDialogo);
+        layout_caixaDialogo = view.findViewById(R.id.layout_caixaDialogo);
 
         return builder.create();
     }
@@ -69,7 +69,7 @@ public class Caixa_Dialogo extends AppCompatDialogFragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try{
-            numeroCopias = (pegarNumeroCopias) context;
+            retornaNumeroCopias = (pegarNumeroCopias) context;
         }catch (ClassCastException e){
             throw new ClassCastException(context.toString()+getString(R.string.tx_erro)+e.toString());
         }

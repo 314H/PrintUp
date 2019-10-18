@@ -2,14 +2,19 @@
 <html>
 
 <head>
+  <!-- corrigir bug do jquery -->
   <script>
     if (typeof module === 'object') {
       window.module = module;
       module = undefined;
     }
   </script>
+
+  <!-- scripts para carregar o jquery -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script>
+
+  <!-- arquivos de estilização -->
   <link rel="stylesheet" href="../css/photon.css">
   <link rel="stylesheet" href="../css/syle.css">
   <title>PrintUp</title>
@@ -19,12 +24,13 @@
 <body onload="carregarFirebase()">
 
   <div class="window">
+    
+    <!-- cabeçalho da página -->
     <header class="toolbar toolbar-header">
       <h1 class="title">PESQUISA DE ALUNO</h1>
     </header>
-    <div class="window-content">
 
-      <!-- divisão da janela em painéis -->
+    <div class="window-content">
       <div class="pane-group">
 
         <!-- menu lateral -->
@@ -73,16 +79,15 @@
             <!-- painel do formulário -->
             <div class="pane-body">
               <form id="formPesquisaAluno">
+
                 <div class="form-group">
-                  <input type="text" id="inputPesquisaCPFAluno" class="form-control inputCadastro"
-                    placeholder="Pesquisar aluno por CPF" onkeypress="pesquisar()">
-                  </input>
+                  <input type="text" id="input_pesquisaCPFAluno" class="form-control inputCadastro" placeholder="Pesquisar aluno por CPF" onkeypress="pesquisar()" />
                 </div>
+
                 <div class="form-group">
-                  <input type="text" id="inputPesquisaNomeAluno" class="form-control inputCadastro"
-                    placeholder="Pesquisar aluno por nome" onkeypress="pesquisar()">
-                  </input>
+                  <input type="text" id="input_pesquisaNomeAluno" class="form-control inputCadastro" placeholder="Pesquisar aluno por nome" onkeypress="pesquisar()" />
                 </div>
+
                 <button type="button" id="pesquisarAluno" onclick="pesquisar()" class="btn btn-positive buttonCadastro">
                   Procurar
                 </button>
@@ -91,7 +96,8 @@
 
             <!-- painel da lista de resultados -->
             <div class="pane-body">
-              <table id="resultadoPesquisaAlunos" class="table table-striped itensTabela">
+              <table id="tabela_pesquisaAluno" class="table table-striped itensTabela">
+
                 <thead>
                   <tr>
                     <th>Nome</th>
@@ -101,8 +107,10 @@
                     <th>Apagar</th>
                   </tr>
                 </thead>
+
                 <tbody>
                 </tbody>
+                
               </table>
             </div>
 
@@ -115,6 +123,7 @@
   </div>
 
 </body>
+
 <!-- scripts firebase -->
 <script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-database.js"></script>

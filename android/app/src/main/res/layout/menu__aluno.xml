@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layoutMenuAluno"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_menuAluno"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="10dp"
@@ -10,14 +11,14 @@
     android:orientation="vertical">
 
         <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager_menuAluno"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/vpg_MenuAluno">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout_menuAluno"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tlt_MenuAluno"/>
+                android:layout_height="wrap_content"/>
 
         </androidx.viewpager.widget.ViewPager>
 

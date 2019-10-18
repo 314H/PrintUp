@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <!-- script para recarregar página a cada 1 minuto -->
+  <!-- script para recarregar página a cada 2 minutos -->
   <META HTTP-EQUIV="Refresh" CONTENT="60;URL=./index.html">
   <script>
     if (typeof module === 'object') {
@@ -11,24 +11,28 @@
     }
   </script>
 
+  <!-- script para adicionar o jquery ao projeto -->
   <script type="text/javascript" src="./node_modules/jquery/dist/jquery.min.js"></script>
+
+  <!-- arquivos de estilização -->
   <link rel="stylesheet" href="./css/photon.css">
   <link rel="stylesheet" href="./css/syle.css">
+
   <title>PrintUp</title>
   <meta charset="utf-8">
 </head>
 
-<body onload="carregarFirebase(),
-              preencherlistaAlunos(), 
-              preencherlistaProfessores()">
+<!-- funções executadas ao carregar página -->
+<body onload="carregarFirebase(), preencherlistaAlunos(), preencherlistaProfessores()">
 
   <div class="window">
-    <header class="toolbar toolbar-header">
-      <h1 class="title">IMPRESSÃO</h1>
-    </header>
-    <div class="window-content  containerPrincipal">
 
-      <!-- divisão da janela em painéis -->
+    <!-- cabeçalho da página -->
+    <header class="toolbar toolbar-header">
+      <h1 class="title">IMPRESSÕES</h1>
+    </header>
+
+    <div class="window-content  containerPrincipal">
       <div class="pane-group">
 
         <!-- menu lateral -->
@@ -72,8 +76,8 @@
         <!-- painel com as listas -->
         <div class="pane containerTabela">
 
-          <!-- lista alunos -->
-          <table id="tabelaDeAlunos" class="table table-striped itensTabela">
+          <!-- lista de alunos -->
+          <table id="tabela_impressoesAlunos" class="table table-striped itensTabela">
             <thead>
               <tr>
                 <th>Nome</th>
@@ -86,8 +90,8 @@
             </tbody>
           </table>
 
-          <!-- lista professores -->
-          <table id="tabelaDeProfessores" class="table table-striped itensTabela">
+          <!-- lista de professores -->
+          <table id="tabela_impressoesProfessores" class="table table-striped itensTabela">
             <thead>
               <thead>
                 <tr>
@@ -103,6 +107,7 @@
 
         </div>
       </div>
+
     </div>
   </div>
 </body>

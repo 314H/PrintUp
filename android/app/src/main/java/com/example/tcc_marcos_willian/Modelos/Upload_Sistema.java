@@ -1,7 +1,7 @@
 package com.example.tcc_marcos_willian.Modelos;
 
 public class Upload_Sistema {
-    public String url, nome_Arquivo;
+    public String url, nomeArquivo;
 
     public Upload_Sistema() {
     }
@@ -14,11 +14,11 @@ public class Upload_Sistema {
         this.url = url;
     }
 
-    public String getNome_Arquivo() {
-        return nome_Arquivo;
+    public String getNomeArquivo() {
+        return nomeArquivo;
     }
 
-    public void setNome_Arquivo(String nome_Arquivo) {
-        this.nome_Arquivo = nome_Arquivo;
+    public void setNomeArquivo(String nomeArquivo) {
+        this.nomeArquivo = nomeArquivo;
     }
 }
