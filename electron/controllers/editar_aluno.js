@@ -78,7 +78,7 @@ function editar() {
     if((inputNome.trim() == '') || (inputEmail.trim() == '') || (inputCPF.trim() == '')){
         alert('Preencha todos os campos corretamente!')
     } else {
-        if((inputEmail.indexOf("@") != -1)  && (inputEmail.indexOf(".") != -1)) {
+        if((inputEmail.indexOf("@") != -1)  && (inputEmail.indexOf(".com") != -1)) {
 
             // verificar se CPF é válido
             if(cpfFormatado.length != 11) {
