@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "322836423260",
+    "firebase_url": "https://tcc-marcos-willian.firebaseio.com",
+    "project_id": "tcc-marcos-willian",
+    "storage_bucket": "tcc-marcos-willian.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322836423260:android:30172952d95fd145",
+        "android_client_info": {
+          "package_name": "com.example.tcc_marcos_willian"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "322836423260-0lanjplat03mltbk9b4utg0d32vrs3ms.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tcc_marcos_willian",
+            "certificate_hash": "6fe6879b6459d45895ff353642267fa5fb27bc7c"
+          }
+        },
+        {
+          "client_id": "322836423260-9r4iatoills6436dlold0jd4nb4k4g6s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBx8CSM1npb1oagXqOo3O1KtRKrjwFUeck"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "322836423260-9r4iatoills6436dlold0jd4nb4k4g6s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

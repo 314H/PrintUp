@@ -1,0 +1,274 @@
+{
+  "imprimir" : {
+    "aluno" : {
+      "-Lqi83ObxdK2O3q2qesi" : {
+        "nome_usuario" : "Marcos Warmling Berti",
+        "numero_copias" : "02",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Faluno%2F1570584681435.docx?alt=media&token=d8e12820-73fb-41aa-8613-5ec08de229e1"
+      },
+      "-Lqi88_bgiTq3hoycW3W" : {
+        "nome_usuario" : "Marcos Warmling Berti",
+        "numero_copias" : "05",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Faluno%2F1570584703757.pdf?alt=media&token=88e93ce8-901d-474f-a7fe-745b7acae5cc"
+      },
+      "-Lqi8GxeZjQ8Rcf_LLvf" : {
+        "nome_usuario" : "Willian Lembeck Roque",
+        "numero_copias" : "10",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Faluno%2F1570584737606.docx?alt=media&token=b619c1b5-fbb7-4b61-bf0f-e6737c40ce40"
+      },
+      "-Lqi8Kg-bkjVuT2OxTpZ" : {
+        "nome_usuario" : "Willian Lembeck Roque",
+        "numero_copias" : "01",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Faluno%2F1570584754100.pdf?alt=media&token=51ea8375-5e2f-455f-b125-7f1b1379d936"
+      },
+      "-Lqi8UNd5252e2U6kjVp" : {
+        "nome_usuario" : "Fabiano Daros Freitas",
+        "numero_copias" : "15",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Faluno%2F1570584792724.pdf?alt=media&token=39a4c4c8-5099-4a35-bfd9-c049936ea2d1"
+      },
+      "-Lqi8YB-JUEhtZVa3-BR" : {
+        "nome_usuario" : "Fabiano Daros Freitas",
+        "numero_copias" : "02",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Faluno%2F1570584808708.docx?alt=media&token=6d376f29-b7a8-41d7-a137-d61caf907de5"
+      },
+      "-Lqi8fhuSC0AwFfZmRdq" : {
+        "nome_usuario" : "Beatriz Do Nascimento Castanhetti",
+        "numero_copias" : "01",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Faluno%2F1570584843380.pdf?alt=media&token=8ad295bc-958f-45c2-b6e1-64e9f309e6fa"
+      },
+      "-Lqi8jPWrktlEsNHrfrK" : {
+        "nome_usuario" : "Beatriz Do Nascimento Castanhetti",
+        "numero_copias" : "5",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Faluno%2F1570584859121.docx?alt=media&token=c5d9737d-8986-4d98-a9c4-70b7ec9a65b3"
+      },
+      "-Lqi8rDzAMjhXU86czAD" : {
+        "nome_usuario" : "Ana Paula Moretto De Aragão",
+        "numero_copias" : "11",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Faluno%2F1570584890902.docx?alt=media&token=3966609e-ad5a-4728-8d17-e6af68ce1346"
+      },
+      "-Lqi8usqwmAxZoyAE9Sl" : {
+        "nome_usuario" : "Ana Paula Moretto De Aragão",
+        "numero_copias" : "03",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Faluno%2F1570584905329.pdf?alt=media&token=77389173-9168-4f72-9232-c7e8a5202fd7"
+      },
+      "-Lqi94xOluEEjFfbQWS5" : {
+        "nome_usuario" : "Willian Lembeck Roque",
+        "numero_copias" : "5",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FNathalia%20Fagundes%20Rodrigues%2Fexerc%C3%ADcios.docx?alt=media&token=6d5c9866-eda9-499f-bd84-bcccad5a0199"
+      },
+      "-Lqi9E2b2iihbuNco3Iu" : {
+        "nome_usuario" : "Marcos Warmling Berti",
+        "numero_copias" : "01",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FRicardo%20Cidade%20Sombrio%2Fapostila.pdf?alt=media&token=d8dafd09-0108-4fd2-8c95-475cdb8d8f8e"
+      }
+    },
+    "professor" : {
+      "-Lqi3t-lHayTwfblCIhF" : {
+        "nome_usuario" : "Ricardo Cidade Sombrio",
+        "numero_copias" : "50",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Fprofessor%2F1570583587707.docx?alt=media&token=d262dc6d-8cd3-4193-888b-bf9a0aead592"
+      },
+      "-Lqi40cXZILPHqNIyBvA" : {
+        "nome_usuario" : "Ricardo Cidade Sombrio",
+        "numero_copias" : "30",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Fprofessor%2F1570583623503.pdf?alt=media&token=4ac50187-2044-48df-b20a-9b16d20ab49a"
+      },
+      "-Lqi4AcA4GcAbidCZtcc" : {
+        "nome_usuario" : "Nathalia Fagundes Rodrigues",
+        "numero_copias" : "25",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Fprofessor%2F1570583664464.docx?alt=media&token=f9dac80c-e38b-4644-8b49-13f54ecdd64d"
+      },
+      "-Lqi4HrAYcu5OujPUDB5" : {
+        "nome_usuario" : "Ramon Venson",
+        "numero_copias" : "40",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Fprofessor%2F1570583693840.docx?alt=media&token=d9145545-ea5c-41f2-be9b-35054768f7bb"
+      },
+      "-Lqi4MytEa9vYZZAleVr" : {
+        "nome_usuario" : "Ramon Venson",
+        "numero_copias" : "10",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Fprofessor%2F1570583715289.pdf?alt=media&token=b86ada84-2cdd-4c41-b12b-84d863377635"
+      },
+      "-Lqi4Y9M4BUGDGkxHr9h" : {
+        "nome_usuario" : "Evando Vieira",
+        "numero_copias" : "15",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Fprofessor%2F1570583760419.docx?alt=media&token=abb5bd51-e958-4eae-922a-549951b6bbd8"
+      },
+      "-Lqi4b_9waxB7IAOHsBX" : {
+        "nome_usuario" : "Evando Vieira",
+        "numero_copias" : "50",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Fprofessor%2F1570583778738.pdf?alt=media&token=1c7e1540-4397-4417-9013-b27ec5fd8bb7"
+      },
+      "-Lqi4lzVTQAiDW-9AJGp" : {
+        "nome_usuario" : "Filipe Ribeiro Da Cas",
+        "numero_copias" : "26",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Fprofessor%2F1570583821695.pdf?alt=media&token=9d31f185-ec41-4c38-a76a-2efb76a64bca"
+      },
+      "-Lqi4q7dYevjXmAPDjDA" : {
+        "nome_usuario" : "Filipe Ribeiro Da Cas",
+        "numero_copias" : "42",
+        "status" : "aguardando",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/imprimir%2Fprofessor%2F1570583838660.docx?alt=media&token=dc90fa4a-77cd-400c-8f81-84dcc217afd2"
+      }
+    }
+  },
+  "sistema" : {
+    "Evando Vieira" : {
+      "apostila" : {
+        "nome_Arquivo" : "apostila",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FEvando%20Vieira%2Fapostila.pdf?alt=media&token=c47c1dc3-bef8-46ba-9f1e-f7cc57b8405a"
+      },
+      "exercícios" : {
+        "nome_Arquivo" : "exercícios",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FEvando%20Vieira%2Fexerc%C3%ADcios.docx?alt=media&token=e59da69c-38e5-449d-8641-ca952865a668"
+      }
+    },
+    "Filipe Ribeiro Da Cas" : {
+      "apostila" : {
+        "nome_Arquivo" : "apostila",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FFilipe%20Ribeiro%20Da%20Cas%2Fapostila.pdf?alt=media&token=3f1a9a9b-bed8-48e4-aa60-22aee5522407"
+      },
+      "apresentação" : {
+        "nome_Arquivo" : "apresentação",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FFilipe%20Ribeiro%20Da%20Cas%2Fapresenta%C3%A7%C3%A3o.pptx?alt=media&token=2371c10e-f7cc-4909-8ea2-364f75258fd9"
+      },
+      "exercícios" : {
+        "nome_Arquivo" : "exercícios",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FFilipe%20Ribeiro%20Da%20Cas%2Fexerc%C3%ADcios.docx?alt=media&token=b9011d39-9910-483f-8c73-9f1753ba6d43"
+      },
+      "imagem" : {
+        "nome_Arquivo" : "imagem",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FFilipe%20Ribeiro%20Da%20Cas%2Fimagem.jpg?alt=media&token=906e42df-8215-4622-b467-5797a1f4e72a"
+      }
+    },
+    "Nathalia Fagundes Rodrigues" : {
+      "apresentação" : {
+        "nome_Arquivo" : "apresentação",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FNathalia%20Fagundes%20Rodrigues%2Fapresenta%C3%A7%C3%A3o.pptx?alt=media&token=6ae14a17-f61f-4a1a-af4c-135e577612d1"
+      },
+      "exercícios" : {
+        "nome_Arquivo" : "exercícios",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FNathalia%20Fagundes%20Rodrigues%2Fexerc%C3%ADcios.docx?alt=media&token=6d5c9866-eda9-499f-bd84-bcccad5a0199"
+      },
+      "imagem" : {
+        "nome_Arquivo" : "imagem",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FNathalia%20Fagundes%20Rodrigues%2Fimagem.jpg?alt=media&token=ebcb276a-5288-41f5-a224-c05194078496"
+      }
+    },
+    "Ramon Venson" : {
+      "apostila" : {
+        "nome_Arquivo" : "apostila",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FRamon%20Venson%2Fapostila.pdf?alt=media&token=f0e1dbe8-55d0-4dfe-9cde-cc2e1f824bfa"
+      },
+      "exercícios" : {
+        "nome_Arquivo" : "exercícios",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FRamon%20Venson%2Fexerc%C3%ADcios.docx?alt=media&token=4445c389-fe80-418f-8654-b1c092686c14"
+      }
+    },
+    "Ricardo Cidade Sombrio" : {
+      "apostila" : {
+        "nome_Arquivo" : "apostila",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FRicardo%20Cidade%20Sombrio%2Fapostila.pdf?alt=media&token=d8dafd09-0108-4fd2-8c95-475cdb8d8f8e"
+      },
+      "exercícios" : {
+        "nome_Arquivo" : "exercícios",
+        "url" : "https://firebasestorage.googleapis.com/v0/b/tcc-marcos-willian.appspot.com/o/sistema%2FRicardo%20Cidade%20Sombrio%2Fexerc%C3%ADcios.docx?alt=media&token=dd029998-f2bf-4cd7-961c-44095d0751e7"
+      }
+    }
+  },
+  "usuarios" : {
+    "aluno" : {
+      "12345678910" : {
+        "cpf" : "12345678910",
+        "email" : "marcos@gmail.com",
+        "nome" : "Marcos Warmling Berti",
+        "nomeLowerCase" : "marcos warmling berti",
+        "tokenNotification" : "cHVWSz6CAV0:APA91bHDNhoCtRx65_Ykl_QB8p9HY1k8m7IMHP3hOwIoAdlmyu9Gk9UWa14GYYk9Ofa7Q4IruwkS8tIlkRCC7Vpmtr9tW3Jx4_g-F5HNfZQt1JRDzNw-7DV9Hj_dXZgm_VbBorIOEkrS"
+      },
+      "12345678920" : {
+        "cpf" : "12345678920",
+        "email" : "willian@gmail.com",
+        "nome" : "Willian Lembeck Roque",
+        "nomeLowerCase" : "willian lembeck roque",
+        "tokenNotification" : "cHVWSz6CAV0:APA91bHDNhoCtRx65_Ykl_QB8p9HY1k8m7IMHP3hOwIoAdlmyu9Gk9UWa14GYYk9Ofa7Q4IruwkS8tIlkRCC7Vpmtr9tW3Jx4_g-F5HNfZQt1JRDzNw-7DV9Hj_dXZgm_VbBorIOEkrS"
+      },
+      "12345678930" : {
+        "cpf" : "12345678930",
+        "email" : "fabiano@gmail.com",
+        "nome" : "Fabiano Daros Freitas",
+        "nomeLowerCase" : "fabiano daros freitas",
+        "tokenNotification" : "cHVWSz6CAV0:APA91bHDNhoCtRx65_Ykl_QB8p9HY1k8m7IMHP3hOwIoAdlmyu9Gk9UWa14GYYk9Ofa7Q4IruwkS8tIlkRCC7Vpmtr9tW3Jx4_g-F5HNfZQt1JRDzNw-7DV9Hj_dXZgm_VbBorIOEkrS"
+      },
+      "12345678940" : {
+        "cpf" : "12345678940",
+        "email" : "bia@gmail.com",
+        "nome" : "Beatriz Do Nascimento Castanhetti",
+        "nomeLowerCase" : "beatriz do nascimento castanhetti",
+        "tokenNotification" : "cHVWSz6CAV0:APA91bHDNhoCtRx65_Ykl_QB8p9HY1k8m7IMHP3hOwIoAdlmyu9Gk9UWa14GYYk9Ofa7Q4IruwkS8tIlkRCC7Vpmtr9tW3Jx4_g-F5HNfZQt1JRDzNw-7DV9Hj_dXZgm_VbBorIOEkrS"
+      },
+      "12345678950" : {
+        "cpf" : "12345678950",
+        "email" : "ana@gmail.com",
+        "nome" : "Ana Paula Moretto De Aragão",
+        "nomeLowerCase" : "ana paula moretto de aragão",
+        "tokenNotification" : "cHVWSz6CAV0:APA91bHDNhoCtRx65_Ykl_QB8p9HY1k8m7IMHP3hOwIoAdlmyu9Gk9UWa14GYYk9Ofa7Q4IruwkS8tIlkRCC7Vpmtr9tW3Jx4_g-F5HNfZQt1JRDzNw-7DV9Hj_dXZgm_VbBorIOEkrS"
+      }
+    },
+    "professor" : {
+      "98765432110" : {
+        "cpf" : "98765432110",
+        "email" : "filipe@gmail.com",
+        "nome" : "Filipe Ribeiro Da Cas",
+        "nomeLowerCase" : "filipe ribeiro da cas",
+        "tokenNotification" : "cHVWSz6CAV0:APA91bHDNhoCtRx65_Ykl_QB8p9HY1k8m7IMHP3hOwIoAdlmyu9Gk9UWa14GYYk9Ofa7Q4IruwkS8tIlkRCC7Vpmtr9tW3Jx4_g-F5HNfZQt1JRDzNw-7DV9Hj_dXZgm_VbBorIOEkrS"
+      },
+      "98765432120" : {
+        "cpf" : "98765432120",
+        "email" : "evando@gmail.com",
+        "nome" : "Evando Vieira",
+        "nomeLowerCase" : "evando vieira",
+        "tokenNotification" : "cHVWSz6CAV0:APA91bHDNhoCtRx65_Ykl_QB8p9HY1k8m7IMHP3hOwIoAdlmyu9Gk9UWa14GYYk9Ofa7Q4IruwkS8tIlkRCC7Vpmtr9tW3Jx4_g-F5HNfZQt1JRDzNw-7DV9Hj_dXZgm_VbBorIOEkrS"
+      },
+      "98765432130" : {
+        "cpf" : "98765432130",
+        "email" : "ramon@gmail.com",
+        "nome" : "Ramon Venson",
+        "nomeLowerCase" : "ramon venson",
+        "tokenNotification" : "cHVWSz6CAV0:APA91bHDNhoCtRx65_Ykl_QB8p9HY1k8m7IMHP3hOwIoAdlmyu9Gk9UWa14GYYk9Ofa7Q4IruwkS8tIlkRCC7Vpmtr9tW3Jx4_g-F5HNfZQt1JRDzNw-7DV9Hj_dXZgm_VbBorIOEkrS"
+      },
+      "98765432140" : {
+        "cpf" : "98765432140",
+        "email" : "nathalia@gmail.com",
+        "nome" : "Nathalia Fagundes Rodrigues",
+        "nomeLowerCase" : "nathalia fagundes rodrigues",
+        "tokenNotification" : "cHVWSz6CAV0:APA91bHDNhoCtRx65_Ykl_QB8p9HY1k8m7IMHP3hOwIoAdlmyu9Gk9UWa14GYYk9Ofa7Q4IruwkS8tIlkRCC7Vpmtr9tW3Jx4_g-F5HNfZQt1JRDzNw-7DV9Hj_dXZgm_VbBorIOEkrS"
+      },
+      "98765432150" : {
+        "cpf" : "98765432150",
+        "email" : "ricardo@gmail.com",
+        "nome" : "Ricardo Cidade Sombrio",
+        "nomeLowerCase" : "ricardo cidade sombrio",
+        "tokenNotification" : "cHVWSz6CAV0:APA91bHDNhoCtRx65_Ykl_QB8p9HY1k8m7IMHP3hOwIoAdlmyu9Gk9UWa14GYYk9Ofa7Q4IruwkS8tIlkRCC7Vpmtr9tW3Jx4_g-F5HNfZQt1JRDzNw-7DV9Hj_dXZgm_VbBorIOEkrS"
+      }
+    }
+  }
+}
