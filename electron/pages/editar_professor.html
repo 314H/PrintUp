@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+    <!-- script para corrigir bug no jquery -->
+    <script>
+        if (typeof module === 'object') {
+            window.module = module;
+            module = undefined;
+        }
+    </script>
+
+    <!-- scripts para carregar o jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js"></script>
+   
+    <!-- arquivos de estilização -->
+    <link rel="stylesheet" href="../css/photon.css">
+    <link rel="stylesheet" href="../css/syle.css">
+    <title>PrintUp</title>
+    <meta charset="utf-8">
+</head>
+
+<body onload="carregarFirebase(), carregarDados()">
+
+    <!-- painel do formulário -->
+    <div class="pane-body">
+        <form id="formPesquisaProfessor">
+
+            <div class="form-group">
+                <input type="text" id="input_editarNomeProfessor" class="form-control inputCadastro" placeholder="Editar Nome" />
+            </div>
+
+            <div class="form-group">
+                <input type="text" id="input_editarEmailProfessor" class="form-control inputCadastro" placeholder="Editar Email" />
+            </div>
+
+            <div class="form-group">
+                <input type="text" id="input_editarCPFProfessor" class="form-control inputCadastro" placeholder="Editar CPF" />
+            </div>
+
+            <button type="button" id="button_editarProfessor" onclick="editar()" class="btn btn-positive buttonCadastro" disabled>
+                Editar
+            </button>
+        </form>
+    </div>
+</body>
+<!-- scripts firebase -->
+<script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-database.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.4.0/firebase-auth.js"></script>
+
+<!-- script para executar ações na paǵina -->
+<script src="../controllers/editar_professor.js"></script>
+
+</html>
