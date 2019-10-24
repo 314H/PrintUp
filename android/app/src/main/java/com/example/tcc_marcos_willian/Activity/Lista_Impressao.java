@@ -80,6 +80,7 @@ public class Lista_Impressao extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         String nome = dataSnapshot.child("nomeUsuario").getValue().toString();
+                                        String copias = dataSnapshot.child("numeroCopias").getValue().toString();
                                         String status = dataSnapshot.child("status").getValue().toString();
                                         String url = dataSnapshot.child("url").getValue().toString();
                                         String ext = "";
@@ -92,7 +93,7 @@ public class Lista_Impressao extends AppCompatActivity {
 
                                         if(nomeUsuario.equals(nome)){
                                             i = i +1;
-                                            String nomeLista = "arquivo"+ i +ext+" -- "+status;
+                                            String nomeLista = "arquivo"+ i +ext+" -- "+status+" - "+copias+" cópias";
                                             arrayList.add(nomeLista);
                                             arrayAdapter.notifyDataSetChanged();
                                         }
