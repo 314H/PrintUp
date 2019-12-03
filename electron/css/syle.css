@@ -34,11 +34,13 @@
     flex-grow: 1;
 }
 
+
 legend {
     color: blue;
     text-align: center;
     font-size: 20px;
 }
+
 
 thead {
     font-size: 15px;
@@ -47,18 +49,22 @@ thead {
     text-align: center;
 }
 
+
 tbody {
     font-size: 15px;
     text-align: center;
 }
 
+
 .inputCadastro {
     font-size:15px;
 }
 
+
 .buttonCadastro {
     font-size: 15px;
 }
+
 
 .containerPrincipal {
     width: 100%;
@@ -66,6 +72,7 @@ tbody {
     display: inline-flex;
     flex-flow: row;
 }
+
 
 .buttonLista {
     margin: 5px;

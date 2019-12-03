@@ -29,9 +29,11 @@ async function carregarDados() {
 
     const referenciaProfessor = firebase.database()
 
+
     // pesquisar no firebase database pelo id que veio da tela anterior
     await referenciaProfessor.ref(`usuarios/professor/${resultado}`).once('value').then(function (snapshot) {
         const professor = snapshot.val()
+
 
         // setar nome e email do professor pesquisado para o input
         inputNome.value = professor.nome
@@ -64,6 +66,7 @@ function editar() {
 
     // transformar nome em minusculo para pesquisas posteriores
     const nomeMinusculo = inputNome.toLowerCase()
+
 
     // referencia banco de dados
     var referenciaProfessor = firebase.database().ref(`usuarios/professor/`)
@@ -139,6 +142,7 @@ function editar() {
         }
     }
 }
+
 
 
 //retirar caracteres especiais do CPF

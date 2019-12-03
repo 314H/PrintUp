@@ -13,6 +13,7 @@ async function carregarFirebase() {
 }
 
 
+
 //máscara para o CPF
 $("#input_editarCPFAluno").mask("000.000.000-00");
 
@@ -28,6 +29,7 @@ async function carregarDados() {
     var resultado = link.substring(link.indexOf("?") + 4);
 
     const referenciaAluno = firebase.database()
+
 
     // pesquisar no firebase database pelo id que veio da tela anterior
     await referenciaAluno.ref(`usuarios/aluno/${resultado}`).once('value').then(function (snapshot) {
@@ -51,6 +53,7 @@ async function carregarDados() {
     })
     $('#button_editarAluno').removeAttr('disabled')
 }
+
 
 
 // editar usuário do firebase
@@ -139,6 +142,7 @@ function editar() {
             }
     }
 }
+
 
 
 //retirar caracteres especiais do CPF

@@ -30,6 +30,7 @@ async function cadastrar() {
         document.getElementById('input_cadastroCPFAluno').focus()
     } else {
 
+
         // pesquisar no banco se o usuario já existe
         await referenceAluno.ref(`usuarios/aluno/${cpfFormatado}`).once('value').then(function (snapshot) {
             const verificarCpf = snapshot.val()
@@ -60,7 +61,6 @@ async function cadastrar() {
     }
 }
 
-
 //retirar caracteres especiais do CPF
 function retirarCaracteresEspeciais(cpfEntrada) {
     const cpf01 = cpfEntrada.replace('.', '')
@@ -74,7 +74,7 @@ function retirarCaracteresEspeciais(cpfEntrada) {
 (function ($) {
     usuariosSemCadastro = function () {
   
-      const referenceAluno = firebase.database()
+    const referenceAluno = firebase.database()
 
     // pegar todos os alunos cadastrados no banco
     referenceAluno.ref('usuarios/aluno').once('value').then(function (snapshot) {

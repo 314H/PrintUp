@@ -41,6 +41,7 @@ async function cadastrar() {
                     cpf: cpfFormatado
                 }
                 
+                
                 // cadastrar professor no firebase database
                 referenceProfessor.ref('usuarios/professor/').child(professor.cpf).set(professor)
                     .then(function () {

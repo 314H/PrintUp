@@ -336,6 +336,11 @@ public class Arquivo_Professor extends AppCompatActivity implements Caixa_Dialog
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
             case PERMISSION_STORAGE_CODE:{
+                try {
+
+                } catch (error) {
+
+                }
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED){
                     iniciarDownload();
                 }else {

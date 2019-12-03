@@ -17,6 +17,7 @@ async function carregarFirebase() {
 $("#input_pesquisaCPFAluno").mask("000.000.000-00");
 
 
+
 // pesquisa do aluno no firebase database
 async function pesquisar() {
 
@@ -174,6 +175,7 @@ function deletar(cpf, email) {
     referenciaAluno.ref(`usuarios/aluno/${cpf}`).remove()
         .then(function () {
             
+
             // referencia para firebase auth
             const autenticacao = firebase.auth()
 
@@ -210,6 +212,7 @@ function deletar(cpf, email) {
             window.location.reload()
         })
 }
+
 
 
 // abrir janela para edição de usuario
